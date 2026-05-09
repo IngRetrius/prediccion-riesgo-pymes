@@ -2,8 +2,6 @@
 
 Trabajo final de la asignatura **Inteligencia Artificial**. Construimos un modelo de Machine Learning para clasificar el riesgo financiero de PYMES colombianas a partir de estados financieros publicos del SIREM (Superintendencia de Sociedades).
 
-> **Alcance**: Esta es una rama derivada del proyecto de tesis "Diseno e Implementacion de un Sistema Web de Analisis Financiero...". Aqui nos enfocamos solo en el componente de IA — **no se construye el sistema web**.
-
 ## Convencion de entrenamiento y validacion
 
 - **Entrenamiento y desarrollo**: dataset **nacional** (38,245 PYMES NIIF Pymes, 2016–2024, 203,104 observaciones empresa-ano).
@@ -160,6 +158,10 @@ Dependencias clave: `pandas 2.2`, `numpy 1.26`, `scikit-learn 1.4`, `xgboost 2.0
 - [ ] Notebook 05 — entrenamiento (LR / RF / XGBoost)
 - [ ] Notebook 06 — evaluacion + TreeSHAP
 - [ ] Notebook 07 — validacion sobre Ibague
+
+## Plan de trabajo
+
+El roadmap completo del proyecto (11 fases con criterios de aceptacion, dependencias, pitfalls, mapeo a las secciones del informe final y plan de slides) esta en [`PLAN_DE_TRABAJO.md`](PLAN_DE_TRABAJO.md). Es el documento operativo que cualquier integrante (humano o IA) puede ejecutar fase por fase.
 
 ## Notas operativas
 
