@@ -1,0 +1,41 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Datasets crudos (>9 GB total; ver docs/DATASET_SOURCES.md para descargar)
+# Pueden estar en /dataset/ (raiz, convencion del notebook 02) o data/raw/
+dataset/
+data/raw/
+
+# Modelos entrenados (se regeneran ejecutando los notebooks)
+models/
+*.joblib
+*.pkl
+*.pickle
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code
+.claude/
+
+# Variables de entorno
+.env
+.env.local

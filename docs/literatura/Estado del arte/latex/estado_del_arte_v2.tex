@@ -1,0 +1,430 @@
+% ===========================================================================
+% Estado del Arte - Trabajo de Grado (Version 2)
+% Titulo: Diseno e Implementacion de un Sistema Web de Analisis Financiero
+%         con Modelo de Machine Learning para la Evaluacion de Riesgo en
+%         PYMES del Municipio de Ibague, Tolima
+% Autores: Juan Camilo Perea, German
+% Version: v2 - Integra correcciones del checklist de evaluacion
+% ===========================================================================
+
+\documentclass[12pt, letterpaper]{article}
+
+% --- Idioma y codificacion ---
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% --- Formato de pagina ---
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% --- Tablas ---
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash\hspace{0pt}\emergencystretch=1em\hyphenpenalty=50\relax}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}\emergencystretch=1em\hyphenpenalty=50\relax}p{#1}}
+
+% --- Citas y referencias ---
+\usepackage[round, authoryear, sort&compress]{natbib}
+\bibliographystyle{apalike}
+
+% --- Tipografia y miscelaneos ---
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+\begin{document}
+
+% ===================================================================
+\section{Estado del Arte}
+% ===================================================================
+
+\subsection{Introducci\'on}
+
+El presente estado del arte examina la literatura cient\'ifica relevante para el dise\~no e implementaci\'on de un sistema web de an\'alisis financiero con modelo de \textit{Machine Learning} (ML) orientado a la evaluaci\'on de riesgo en peque\~nas y medianas empresas (PYMES). Esta revisi\'on se sit\'ua en la intersecci\'on de tres dominios disciplinares: (i) el an\'alisis financiero y la evaluaci\'on de riesgo empresarial, (ii) las t\'ecnicas de aprendizaje autom\'atico aplicadas a la predicci\'on de quiebra y dificultades financieras, y (iii) los sistemas de informaci\'on web como herramientas de soporte a la toma de decisiones gerenciales. El trabajo se apoya en el dataset SIREM de la Superintendencia de Sociedades de Colombia, con cobertura de \textbf{38.245 PYMES} y \textbf{203.104 observaciones empresa-a\~no} para el panel 2016--2024 bajo normativa NIIF Pymes Grupo 2, escala que se describe en detalle en la Secci\'on~\ref{sec:niif} y cuyo alcance excede en un orden de magnitud a los antecedentes identificados en mercados emergentes.
+
+\subsubsection*{Metodolog\'ia de b\'usqueda y criterios de selecci\'on}
+
+La b\'usqueda sistem\'atica de literatura se realiz\'o en las bases de datos Scopus, IEEE Xplore, ScienceDirect, Google Scholar, SciELO y Redalyc, complementada con repositorios de \textit{working papers} como SSRN y arXiv. El periodo de b\'usqueda comprende publicaciones entre 2015 y 2025, con inclusi\'on de referencias seminales anteriores ---como los modelos de \citet{Altman1968}, \citet{Ohlson1980} y \citet{Zmijewski1984}--- indispensables para contextualizar la evoluci\'on del campo.
+
+Los criterios de inclusi\'on priorizaron: (a) art\'iculos revisados por pares publicados en revistas indexadas; (b) estudios enfocados en PYMES, mercados emergentes o aplicaciones de ML en contextos financieros; (c) trabajos con claridad metodol\'ogica en el dise\~no experimental y reporte de m\'etricas; y (d) cobertura tem\'atica de los siete ejes de la revisi\'on. Se excluyeron estudios puramente te\'oricos sin evidencia emp\'irica, art\'iculos sin acceso al texto completo y trabajos con limitaciones metodol\'ogicas sustanciales no declaradas por los autores.
+
+La revisi\'on incorpora adicionalmente fuentes no convencionales (tesis de maestr\'ia, \textit{working papers}) cuando aportan evidencia emp\'irica relevante no disponible en literatura revisada por pares; en tales casos, el estatus de la fuente se se\~nala expl\'icitamente en el texto para permitir al lector ponderar su solidez. Las revistas de menor impacto factor se consideraron cuando presentan estudios emp\'iricos originales con datos verificables, pero sus hallazgos se triangulan con evidencia proveniente de revistas de alto impacto siempre que es posible. En total, se seleccionaron 40 documentos primarios y 7 referencias seminales.
+
+\subsubsection*{Organizaci\'on}
+
+La revisi\'on se organiza en siete ejes tem\'aticos que progresivamente construyen la justificaci\'on del presente trabajo: la evaluaci\'on de riesgo financiero en PYMES (Secci\'on~\ref{sec:riesgo}), los modelos cl\'asicos de predicci\'on de quiebra (Secci\'on~\ref{sec:clasicos}), el \textit{Machine Learning} aplicado a riesgo financiero (Secci\'on~\ref{sec:ml}), los sistemas web para an\'alisis financiero (Secci\'on~\ref{sec:web}), el contexto colombiano y las NIIF (Secci\'on~\ref{sec:niif}), la interpretabilidad y AI explicable (Secci\'on~\ref{sec:xai}), y el uso de datos de panel y series temporales (Secci\'on~\ref{sec:panel}). La secci\'on final integra estos hallazgos en una s\'intesis cr\'itica que identifica los vac\'ios de investigaci\'on que este trabajo busca abordar (Secci\'on~\ref{sec:sintesis}).
+
+% ===================================================================
+\subsection{Evaluaci\'on de riesgo financiero en PYMES}
+\label{sec:riesgo}
+% ===================================================================
+
+\subsubsection{Fundamentos conceptuales del riesgo financiero}
+
+El riesgo financiero en las PYMES constituye un fen\'omeno multidimensional que abarca diversas categor\'ias ---riesgo de cr\'edito, riesgo de liquidez, riesgo de mercado y riesgo operacional--- cuyas interacciones determinan la capacidad de supervivencia empresarial. Siguiendo la distinci\'on introducida por \citet{Bortolotti2024}, el presente trabajo adopta dos nociones operativas diferenciadas: la \textbf{dificultad financiera} se entiende como un estado potencialmente reversible de deterioro en los indicadores contables (liquidez, solvencia, rentabilidad) que eleva la probabilidad de incumplimiento sin implicar necesariamente insolvencia legal; la \textbf{quiebra} se entiende como el evento irreversible de liquidaci\'on o insolvencia formalmente declarada ante la autoridad competente (en Colombia, la Superintendencia de Sociedades bajo la Ley 1116 de 2006). Dado que el SIREM no registra sistem\'aticamente eventos legales de liquidaci\'on para todo el universo de PYMES vigiladas, el sistema propuesto estima probabilidad de pertenencia a zonas de \textit{dificultad financiera} definidas por indicadores contables, no probabilidad de quiebra legal. En el contexto colombiano, \citet{HigueraVargas2021} presentan una revisi\'on de los aspectos fundamentales de los riesgos financieros y sus incidencias en el pa\'is, identificando que la falta de una gesti\'on financiera estructurada en las PYMES amplifica su vulnerabilidad ante fluctuaciones econ\'omicas. Esta problem\'atica no es exclusivamente colombiana: \citet{Kotaskova2020}, a partir de una encuesta a 1.585 empresarios en los pa\'ises del Grupo de Visegrado (Rep\'ublica Checa, Eslovaquia, Polonia y Hungr\'ia), encontraron que si bien los emprendedores perciben el riesgo financiero como parte cotidiana de sus actividades, la intensidad y sofisticaci\'on de sus pr\'acticas de gesti\'on var\'ia considerablemente entre pa\'ises, con los empresarios h\'ungaros mostrando mayor autoconfianza en sus capacidades de gesti\'on de riesgo financiero.
+
+La literatura reciente subraya que el factor diferenciador en mercados emergentes es la alfabetizaci\'on financiera de los empresarios. \citet{Senaya2025} demostr\'o, mediante un enfoque de m\'etodos mixtos en m\'ultiples mercados emergentes, que existe una relaci\'on positiva significativa entre el nivel de alfabetizaci\'on financiera de los propietarios de PYMES y la eficiencia en la gesti\'on de riesgos, incluyendo mejor acceso a cr\'edito formal, mayor diversificaci\'on de fuentes de financiamiento y mejor administraci\'on del flujo de caja. Estos hallazgos, articulados con los de \citet{Kotaskova2020} y \citet{HigueraVargas2021}, configuran un panorama en el que la gesti\'on del riesgo financiero en PYMES es un desaf\'io universal, pero particularmente agudo en econom\'ias emergentes donde convergen menor alfabetizaci\'on financiera, mayor informalidad y menor acceso a herramientas tecnol\'ogicas de soporte.
+
+\subsubsection{Estado de la investigaci\'on en predicci\'on de riesgo para PYMES}
+
+A pesar de la importancia reconocida de las PYMES para las econom\'ias nacionales, la producci\'on acad\'emica sobre predicci\'on de dificultades financieras en este segmento es limitada. \citet{Abubakar2025} realizaron un an\'alisis bibliom\'etrico siguiendo el protocolo PRISMA sobre las tendencias globales de investigaci\'on en predicci\'on de dificultades financieras en PYMES durante el per\'iodo 2014--2024. Su b\'usqueda en Google Scholar arroj\'o \'unicamente 19 art\'iculos que cumplieron los criterios de inclusi\'on, cifra que los propios autores califican en sus conclusiones como ``alarmantemente baja'' considerando la relevancia econ\'omica del sector \citep[juicio atribuido a los autores originales;][]{Abubakar2025}. El an\'alisis de co-citaci\'on y co-ocurrencia de palabras clave revel\'o que la investigaci\'on se concentra en cuatro cl\'usteres tem\'aticos ---modelos, adaptaci\'on, desaf\'ios y oportunidades--- con notables vac\'ios en regiones como \'Africa y Am\'erica Latina.
+
+La dimensi\'on pr\'actica de esta brecha investigativa fue evidenciada por \citet{CardonaZuleta2025} en un estudio cualitativo con directivos de PYMES en Medell\'in, Colombia. Mediante entrevistas semiestructuradas, los autores encontraron que una proporci\'on significativa de empresarios desconoce el concepto mismo de riesgo financiero y sus posibles consecuencias, y que la mayor\'ia no aplica estrategias preventivas para afrontarlo. Este hallazgo es particularmente relevante para el presente trabajo, pues revela que el vac\'io no es solo acad\'emico sino profundamente pr\'actico: las PYMES colombianas carecen tanto de modelos predictivos adaptados a su contexto como de herramientas accesibles que traduzcan dichos modelos en informaci\'on \'util para la toma de decisiones.
+
+En s\'intesis, la literatura sobre riesgo financiero en PYMES evidencia tres vac\'ios interconectados: (1) la producci\'on investigativa global es cuantitativamente escasa, especialmente para Am\'erica Latina \citep{Abubakar2025}; (2) existe una desconexi\'on entre la disponibilidad de datos financieros estandarizados y su aprovechamiento anal\'itico \citep{HigueraVargas2021}; y (3) los empresarios carecen de cultura financiera y herramientas tecnol\'ogicas para gestionar proactivamente el riesgo \citep{CardonaZuleta2025, Senaya2025}. El presente trabajo busca abordar simult\'aneamente estas tres dimensiones mediante un sistema web que integre modelos predictivos con visualizaciones interpretables.
+
+Dado que la evaluaci\'on de riesgo financiero requiere modelos cuantitativos, la siguiente secci\'on examina los modelos estad\'isticos cl\'asicos que han servido como referencia durante m\'as de cinco d\'ecadas.
+
+% ===================================================================
+\subsection{Modelos cl\'asicos de predicci\'on de quiebra}
+\label{sec:clasicos}
+% ===================================================================
+
+\subsubsection{Los modelos fundacionales}
+
+La predicci\'on de quiebra empresarial como campo de investigaci\'on cuantitativa tiene su origen en el trabajo seminal de \citet{Altman1968}, quien desarroll\'o el modelo Z-Score mediante an\'alisis discriminante m\'ultiple (MDA) utilizando cinco razones financieras ---capital de trabajo/activos totales, utilidades retenidas/activos totales, EBIT/activos totales, valor de mercado del patrimonio/valor en libros de la deuda total, y ventas/activos totales--- para clasificar empresas en zonas de riesgo (segura, gris e insolvente). Este modelo, originalmente calibrado con empresas manufactureras estadounidenses, estableci\'o el paradigma de que las razones financieras contienen informaci\'on predictiva sobre la quiebra futura. Altman desarroll\'o posteriormente variantes para ampliar la aplicabilidad del modelo: el \textbf{Z'-Score} para empresas no manufactureras (reemplazando el cociente de valor de mercado por valor en libros del patrimonio) y el \textbf{Z''-Score} para mercados emergentes (eliminando adem\'as la raz\'on de rotaci\'on de activos). Dado que el presente trabajo analiza PYMES colombianas no cotizadas bajo NIIF, la variante conceptualmente adecuada como heur\'istica de etiquetado es el Z''-Score para mercados emergentes, calibrado originalmente con empresas mexicanas.
+
+Doce a\~nos despu\'es del trabajo original, \citet{Ohlson1980} propuso el O-Score como alternativa, empleando regresi\'on log\'istica con nueve variables que incorporan tama\~no de firma, apalancamiento, liquidez y m\'etricas de desempe\~no. A diferencia del MDA, la regresi\'on log\'istica no requiere supuestos de normalidad multivariada ni igualdad de matrices de covarianza, representando un avance metodol\'ogico significativo. Complementariamente, \citet{Zmijewski1984} desarroll\'o el X-Score mediante regresi\'on probit con solo tres variables ---rentabilidad (ingreso neto/activos totales), apalancamiento (deuda total/activos totales) y liquidez (activos corrientes/pasivos corrientes)--- demostrando que un modelo parsimonioso puede alcanzar precisi\'on competitiva.
+
+La validez de las categor\'ias de indicadores subyacentes a estos modelos cl\'asicos fue confirmada emp\'iricamente por \citet{Cultrera2016} en un estudio con 7.152 PYMES belgas (3.576 en quiebra, 3.576 solventes). Mediante regresi\'on logit, los autores encontraron que las razones de rentabilidad y liquidez son los mejores predictores de quiebra para PYMES, validando la selecci\'on de indicadores utilizada en el presente trabajo. No obstante, su estudio tambi\'en revel\'o que los efectos regionales y de tama\~no de firma son significativos, sugiriendo que modelos gen\'ericos no capturan completamente las particularidades del segmento PYMES.
+
+\subsubsection{Degradaci\'on temporal y limitaciones de transferencia}
+
+Un hallazgo cr\'itico de la literatura reciente es que los coeficientes de los modelos cl\'asicos no son estacionarios. \citet{Grice2003} demostraron que al aplicar los coeficientes originales de \citet{Ohlson1980} a datos del per\'iodo 1988--1999, la precisi\'on de clasificaci\'on cay\'o de 98\% a apenas 34,8\%\footnote{La cifra del 34,8\% corresponde espec\'ificamente a la tasa de clasificaci\'on correcta de empresas efectivamente en quiebra (sensibilidad o \textit{recall} de la clase positiva) bajo los coeficientes originales de Ohlson re-aplicados al per\'iodo 1988--1999, no al accuracy global del modelo. La reducci\'on refleja la p\'erdida de poder discriminativo sobre la clase de inter\'es cuando los coeficientes no se re-estiman con datos contempor\'aneos.}, mientras que el modelo de \citet{Zmijewski1984} descendi\'o de 82--96\% a 77,6\%. Los autores atribuyen esta degradaci\'on a cambios en el entorno econ\'omico ---ciclos de negocios, estrategias corporativas, innovaci\'on tecnol\'ogica y competencia de mercado--- que alteran las relaciones entre razones financieras y quiebra. Significativamente, la re-estimaci\'on de coeficientes con datos contempor\'aneos mejor\'o sustancialmente la precisi\'on, confirmando que los modelos requieren actualizaci\'on peri\'odica para mantener su validez predictiva.
+
+Estos hallazgos fueron corroborados por \citet{Bouwmeester2020} ---en una tesis de maestr\'ia de la Universidad de Twente, fuente que se cita con la reserva de no haber sido revisada por pares---, quien evalu\'o los tres modelos cl\'asicos en empresas holandesas y belgas durante dos per\'iodos distintos (2007--2010 y 2012--2015), encontrando que los coeficientes difieren significativamente entre per\'iodos con diferentes condiciones econ\'omicas. La conclusi\'on es inequ\'ivoca: los modelos cl\'asicos de predicci\'on de quiebra no pueden aplicarse con sus coeficientes originales a nuevos contextos temporales o geogr\'aficos sin una p\'erdida sustancial de poder predictivo.
+
+Un enfoque metodol\'ogico independiente que refuerza esta conclusi\'on fue desarrollado por \citet{Qiu2020}, quienes aplicaron an\'alisis topol\'ogico de datos (\textit{Topological Data Analysis}, TDA) mediante el algoritmo Ball Mapper sobre el espacio de cinco dimensiones definido por los predictores del modelo de Altman en empresas estadounidenses. Su hallazgo central ---que las firmas en quiebra no se concentran en regiones claramente separables del espacio de razones Z-Score, sino que se distribuyen en m\'ultiples subregiones heterog\'eneas--- cuestiona el supuesto fundamental de que una combinaci\'on lineal de estos cinco predictores sea suficiente para discriminar riesgo. Este resultado tiene implicaciones directas para cualquier uso contempor\'aneo del Z-Score como instrumento clasificador y fundamenta la necesidad de t\'ecnicas capaces de capturar no linealidades y agrupaciones topol\'ogicas complejas.
+
+Ante estas limitaciones, investigaciones recientes han explorado la superioridad de enfoques de ML. \citet{Papadouli2024} evaluaron tanto modelos cl\'asicos (Z-Score de Altman, S-Score de Springate, modelo de Taffler) como clasificadores de ML (regresi\'on log\'istica, Naive Bayes, ANN, SVM, Random Forest, XGBoost, AutoML) en un dataset de 170 PYMES griegas en quiebra y 1.424 solventes. Los resultados mostraron que el Z-Score clasific\'o correctamente solo el 66\% de las empresas en quiebra con una tasa de falsos positivos del 36\%, mientras que los m\'etodos de ML ---particularmente el aprendizaje semi-supervisado y la transferencia de aprendizaje--- lograron desempe\~nos consistentemente superiores, especialmente en el manejo de datos desbalanceados (ratio 1:8 entre quiebra y solvencia).
+
+\begin{table}[htbp]
+\centering
+\caption{Comparaci\'on de modelos cl\'asicos de predicci\'on de quiebra}
+\label{tab:clasicos}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{L{1.9cm} C{0.5cm} L{1.4cm} C{1cm} L{1.6cm} L{1.6cm} L{1.5cm} L{2.1cm}}
+\toprule
+\textbf{Autor(es)} & \textbf{A\~no} & \textbf{Pa\'is} & \textbf{Muestra} & \textbf{Segmento} & \textbf{M\'etodo} & \textbf{Precisi\'on} & \textbf{Limitaci\'on} \\
+\midrule
+Altman & 1968 & EE.UU. & 66 & Manufact. & MDA (Z) & 95\% orig. & Manufactureras \\
+Ohlson & 1980 & EE.UU. & 2.163 & Cotizadas & Logit & 96,1\% orig. & No estacionario \\
+Zmijewski & 1984 & EE.UU. & 840 & Cotizadas & Probit & 82--96\% & Sesgo muestral \\
+Cultrera y Br\'edart & 2016 & B\'elgica & 7.152 & PYMES & Logit & Satisfact. & Solo B\'elgica \\
+Grice y Dugan & 2003 & EE.UU. & $\sim$1.050 & General & Re-estim. & 34,8\% (Ohl.) & Coef.\ inestab. \\
+Bouwmeester & 2020 & P.\ Bajos & Varios & Grandes priv. & Tres modelos & Variable & Coef.\ inestab. \\
+Qiu et al. & 2020 & EE.UU. & Varios & General & TDA Ball Map. & Cualitativa & Subreg.\ heterog. \\
+Papadouli et al. & 2024 & Grecia & 1.594 & PYMES & Cl\'as.\ + ML & 66\% (Z) & Desbalanceados \\
+\bottomrule
+\end{tabularx}
+\renewcommand{\arraystretch}{1}
+\end{table}
+
+\subsubsection{El Z-Score como heur\'istica de etiquetado: riesgos y mitigaciones}
+\label{sec:zscore-label}
+
+La evidencia de \citet{Grice2003}, \citet{Bouwmeester2020} y \citet{Qiu2020} demuestra que los coeficientes del Z-Score no son estacionarios ni transferibles sin p\'erdida de poder predictivo, limitaci\'on que cobra especial relevancia en el presente trabajo dado que el Z''-Score se utiliza como heur\'istica para generar etiquetas iniciales de riesgo sobre las PYMES colombianas en ausencia de un registro sistem\'atico de eventos reales de quiebra para todo el universo del SIREM. Este uso metodol\'ogico exige discutir expl\'icitamente tres riesgos y sus respectivas mitigaciones.
+
+\textbf{Primer riesgo: el modelo de ML podr\'ia limitarse a replicar la clasificaci\'on del Z-Score en lugar de predecir dificultades financieras reales.} Este riesgo es inherente al aprendizaje supervisado cuando las etiquetas provienen de una regla heur\'istica observable: si el modelo recibe como predictores las mismas razones financieras que determinan la etiqueta, aprender\'a el mapeo heur\'istico y no a\~nadir\'a valor predictivo. La mitigaci\'on adoptada se articula en cuatro elementos: (i) utilizar un espacio de predictores considerablemente m\'as amplio que las cinco razones del Z-Score ---incluyendo 18 indicadores financieros cubriendo liquidez, solvencia, rentabilidad y actividad, junto con variables temporales derivadas como variaciones interanuales y tasas de crecimiento---, lo que rompe la identidad entre predictores y generadores de etiqueta; (ii) emplear umbrales de Z''-Score calibrados al contexto colombiano mediante an\'alisis de la distribuci\'on emp\'irica, no los umbrales originales de Altman; (iii) triangular la etiqueta con reglas heur\'isticas adicionales basadas en se\~nales observables (patrimonio negativo sostenido, p\'erdidas acumuladas, deterioro consecutivo) para reducir la dependencia de un \'unico criterio; y (iv) validar el modelo final contra eventos reales de liquidaci\'on registrados por la Superintendencia de Sociedades en un subconjunto de empresas con trazabilidad disponible.
+
+\textbf{Segundo riesgo: los coeficientes del Z''-Score originales podr\'ian ser inadecuados para el contexto sectorial colombiano.} La mitigaci\'on consiste en utilizar el Z''-Score para generar etiquetas categ\'oricas (``riesgo alto'', ``riesgo medio'', ``riesgo bajo'') mediante zonas calibradas por cuartiles emp\'iricos del dataset, no para producir un puntaje continuo que se asuma preciso. La pregunta que el modelo responde no es ``\textit{cu\'al es el Z-Score}'' sino ``\textit{cu\'al es la probabilidad de que una empresa pertenezca al cuartil de riesgo alto}'', una tarea en la que el ruido del Z-Score como proxy se promedia sobre la distribuci\'on.
+
+\textbf{Tercer riesgo: el espacio geom\'etrico del Z-Score no separa limpiamente quiebras y no-quiebras,} como evidenciaron \citet{Qiu2020} mediante an\'alisis topol\'ogico. Este resultado justifica precisamente la arquitectura metodol\'ogica adoptada: utilizar t\'ecnicas de ML no lineales (XGBoost) capaces de capturar las subregiones heterog\'eneas del espacio de riesgo y complementar la predicci\'on con explicaciones SHAP que revelen qu\'e combinaciones de caracter\'isticas determinan cada clasificaci\'on. El enfoque h\'ibrido del presente trabajo ---Z''-Score como insumo de etiquetado junto con 18 indicadores como predictores y XGBoost como modelo--- coincide conceptualmente con la arquitectura h\'ibrida validada por \citet{Wu2022}, quienes combinaron Z-Score y redes neuronales MLP en empresas chinas y reportaron un 99,40\% de precisi\'on, superior al 86,54\% del Z-Score aislado y al 98,26\% de la red neuronal pura. Este trabajo demuestra que la informaci\'on del Z-Score, cuando se integra con modelos de ML en lugar de sustituirse por ellos, aporta valor predictivo incremental.
+
+La justificaci\'on final del uso del Z''-Score como heur\'istica de etiquetado en este trabajo es pragm\'atica: en ausencia de un registro universal de eventos reales de dificultad financiera para las 38.245 PYMES del SIREM, una heur\'istica validada parcialmente mediante triangulaci\'on constituye una aproximaci\'on aceptable para un ejercicio de prueba de concepto, con la advertencia expl\'icita de que las conclusiones del sistema deben interpretarse como ``probabilidad de clasificaci\'on en zonas de riesgo definidas por indicadores contables'' y no como ``probabilidad de quiebra real''.
+
+En conjunto, la evidencia presentada en esta secci\'on permite concluir que los modelos cl\'asicos constituyen una base te\'orica valiosa ---particularmente en la identificaci\'on de las categor\'ias de indicadores financieros relevantes--- pero resultan insuficientes como predictores aut\'onomos en contextos contempor\'aneos diferentes al de su calibraci\'on original. Las limitaciones de los modelos cl\'asicos han motivado la adopci\'on de t\'ecnicas de \textit{Machine Learning}, que no dependen de supuestos distribucionales y pueden capturar relaciones no lineales en los datos financieros. La siguiente secci\'on examina esta corriente de investigaci\'on, que constituye el n\'ucleo metodol\'ogico del presente trabajo.
+
+% ===================================================================
+\subsection{\textit{Machine Learning} aplicado a la predicci\'on de riesgo financiero}
+\label{sec:ml}
+% ===================================================================
+
+\subsubsection{Panorama general y revisiones sistem\'aticas}
+
+La aplicaci\'on de t\'ecnicas de \textit{Machine Learning} a la predicci\'on de riesgo financiero ha experimentado un crecimiento exponencial en la \'ultima d\'ecada. \citet{Dasilas2024} realizaron la revisi\'on sistem\'atica m\'as completa identificada en esta b\'usqueda, analizando 207 estudios emp\'iricos publicados entre 2012 y mediados de 2023 bajo el protocolo PRISMA. Sus hallazgos revelan tres tendencias fundamentales: (1) las redes neuronales son el m\'etodo de ML m\'as frecuentemente utilizado en t\'erminos absolutos; (2) entre los m\'etodos de ensamble, \textit{Extreme Gradient Boosting} (XGBoost) domina con presencia en 25 de 48 estudios de ensamble; y (3) XGBoost alcanza un AUC promedio de 89\%, representando una mejora de 6,42 puntos porcentuales sobre los clasificadores individuales. Estos resultados posicionan a XGBoost como el estado del arte de facto para la predicci\'on de quiebra con datos tabulares.
+
+Complementariamente, \citet{Paz2025} condujeron una revisi\'on sistem\'atica de 23 estudios emp\'iricos (2019--2023) enfocados espec\'ificamente en la evaluaci\'on de riesgo crediticio individual, identificando que la selecci\'on de caracter\'isticas (\textit{feature selection}) mediante metaheur\'isticas ---algoritmos gen\'eticos, optimizaci\'on por enjambre de part\'iculas, algoritmo de luci\'ernagas--- representa una tendencia creciente que mejora significativamente el desempe\~no de los clasificadores. La distribuci\'on geogr\'afica de los estudios revisados (China: 9, India: 5, Espa\~na: 2) confirma la concentraci\'on de la investigaci\'on en mercados asi\'aticos, con escasa representaci\'on de Am\'erica Latina.
+
+Desde una perspectiva institucional, el Fondo Monetario Internacional reconoci\'o formalmente el potencial del ML en la evaluaci\'on de riesgo crediticio. \citet{Bazarbash2019}, en un \textit{working paper} del FMI, analiz\'o las fortalezas y debilidades de las aplicaciones de ML en el contexto de la inclusi\'on financiera, concluyendo que estas t\'ecnicas hacen econ\'omicamente viable la evaluaci\'on de riesgo de peque\~nos prestatarios al capturar no linealidades y endurecer informaci\'on blanda. No obstante, el autor advirti\'o sobre riesgos de exclusi\'on financiera digital, problemas de privacidad de datos y la naturaleza de ``caja negra'' de los modelos complejos ---preocupaciones que justifican la incorporaci\'on de t\'ecnicas de interpretabilidad en el presente trabajo.
+
+\subsubsection{Evidencia emp\'irica: modelos de ensamble en datos financieros de PYMES}
+
+La superioridad de los modelos de ensamble sobre los m\'etodos estad\'isticos cl\'asicos ha sido demostrada consistentemente en estudios emp\'iricos con PYMES de diversas geograf\'ias. Dos corrientes principales emergen de la literatura: los estudios que comparan m\'ultiples algoritmos y los que se enfocan en la aplicabilidad a mercados emergentes.
+
+En la primera corriente, \citet{Boumhidi2025} evaluaron regresi\'on log\'istica, Random Forest y XGBoost para la evaluaci\'on de riesgo crediticio de 124 PYMES marroqu\'ies, utilizando variables financieras, comportamentales y transaccionales. XGBoost demostr\'o la mayor capacidad de detecci\'on de incumplimientos, con cero falsos negativos en el conjunto de prueba, lo que lo hace id\'oneo para contextos donde minimizar la p\'erdida es prioritario. Random Forest, por su parte, alcanz\'o el mayor poder de discriminaci\'on (AUC = 0,93), ofreciendo un balance entre precisi\'on y robustez. \citet{Yufenyuy2024} reportaron resultados similares con datos estadounidenses (32.581 observaciones): Random Forest alcanz\'o 93,2\% de precisi\'on y Gradient Boosting 93,4\%, con el porcentaje de ingreso destinado al pago de pr\'estamos, el ingreso del prestatario y las tasas de inter\'es como las caracter\'isticas m\'as importantes.
+
+La segunda corriente, enfocada en mercados emergentes, aporta evidencia especialmente relevante para el presente trabajo. \citet{Mahesh2025} desarrollaron modelos predictivos para 547 peque\~nas empresas indias con 7.457 observaciones empresa-a\~no (2008--2022), integrando razones financieras, variables espec\'ificas de firma y variables macroecon\'omicas. Utilizando el S-Score de Springate como variable dependiente y regresi\'on logit como m\'etodo de estimaci\'on, alcanzaron 92,7\% de precisi\'on. Sus resultados destacan la importancia de incorporar el contexto macroecon\'omico ---crecimiento del PIB, inflaci\'on, incertidumbre de pol\'itica econ\'omica--- en modelos para mercados emergentes, donde estas variables tienen mayor volatilidad que en econom\'ias desarrolladas.
+
+En una l\'inea complementaria, \citet{PtakChmielewska2020} aplicaron \textit{Random Survival Forests} (RSF) a 806 empresas polacas (312 en quiebra), comparando con regresi\'on de Cox. El RSF logr\'o una tasa de error de 21,46\% frente al 32\% de Cox, demostrando que los m\'etodos de ML no solo son superiores en clasificaci\'on sino tambi\'en en modelado de tiempo hasta el evento. Un hallazgo adicional relevante es que la inclusi\'on de factores no financieros ---sector, forma jur\'idica, tama\~no de empleo, localizaci\'on--- mejor\'o marginalmente el desempe\~no (0,65 puntos porcentuales), sugiriendo que las variables financieras contienen la mayor parte de la informaci\'on predictiva pero los factores contextuales a\~naden valor.
+
+\citet{Bortolotti2024} ---cuyo trabajo se cita en su versi\'on como \textit{working paper} en SSRN, pendiente de revisi\'on por pares--- aportaron una distinci\'on metodol\'ogica valiosa al comparar la predicci\'on de dificultad financiera (evento reversible) con la de quiebra (evento irreversible) en PYMES italianas. Utilizando Random Forest, XGBoost y AdaBoost con m\'as de 80 variables financieras, macroecon\'omicas, geogr\'aficas y sectoriales, demostraron que la predicci\'on de quiebra se mantiene estable hasta tres a\~nos antes del evento, mientras que la predicci\'on de dificultad financiera pierde precisi\'on en el mediano plazo. Este hallazgo tiene implicaciones directas para el horizonte temporal de predicci\'on del sistema propuesto.
+
+\subsubsection{Selecci\'on entre XGBoost, LightGBM y CatBoost}
+\label{sec:gbdt-comparison}
+
+La literatura reciente ha mostrado que el dominio de XGBoost en predicci\'on financiera \citep{Dasilas2024} no implica superioridad absoluta sobre sus dos principales competidores dentro de la familia de \textit{gradient boosted decision trees}: LightGBM (Microsoft, 2017) y CatBoost (Yandex, 2018). Una comparaci\'on empirica directa de los tres algoritmos en el contexto de riesgo crediticio corporativo fue realizada por \citet{Sujatha2025}, quienes evaluaron XGBoost, CatBoost, LightGBM y LSTM sobre un dataset indio de 410 empresas (212 sin incumplimiento, 198 con incumplimiento) rated por ACUITE y BRICKWORK entre 2016 y 2024, utilizando 27 variables explicativas y dos estrategias de reducci\'on dimensional (PCA y selecci\'on mediante Random Forest). Sus resultados indican que los tres modelos de ensamble arbol-basados alcanzan desempe\~nos comparables cuando la selecci\'on de caracter\'isticas se realiza con Random Forest, mientras que LSTM obtiene mejor desempe\~no bajo reducci\'on con PCA. Las diferencias absolutas entre XGBoost, LightGBM y CatBoost en este estudio son inferiores al 2\% en AUC, consistente con los hallazgos de otras comparativas en la literatura de ML financiero.
+
+La elecci\'on de XGBoost en el presente trabajo se justifica sobre tres criterios ponderados: \textbf{(1) paridad de desempe\~no predictivo} ---la evidencia \citep{Sujatha2025, Dasilas2024} indica que la superioridad cualitativa dentro de la familia GBDT sobre datos tabulares financieros es marginal y dependiente del preprocesamiento, por lo que la elecci\'on entre ellos debe basarse en criterios complementarios; \textbf{(2) integraci\'on con TreeSHAP} ---la implementaci\'on oficial de TreeSHAP, el m\'etodo eficiente para calcular valores de Shapley sobre modelos basados en \'arboles, fue originalmente desarrollada y optimizada para XGBoost \citep{LundbergTreeSHAP2020}, caracter\'istica decisiva dado que el sistema propuesto debe entregar explicaciones individuales por empresa en tiempo compatible con una interfaz web (Secci\'on~\ref{sec:xai-complejidad}); y \textbf{(3) madurez del ecosistema} ---XGBoost cuenta con documentaci\'on, soporte multiplataforma y depuradores de producci\'on m\'as consolidados que LightGBM y CatBoost, factor relevante para un sistema cuya mantenibilidad por terceros (estudiantes, investigadores futuros) es un requisito implicito. LightGBM presenta ventajas de velocidad y consumo de memoria en datasets de escala mayor que el del presente trabajo; CatBoost destaca en datasets con alta cardinalidad categ\'orica, caracter\'istica poco prominente en los datos contables del SIREM. En los escenarios donde XGBoost no sea la opci\'on \'optima, el presente trabajo contempla la evaluaci\'on comparativa experimental de los tres algoritmos durante la fase de selecci\'on de modelo.
+
+\subsubsection{Desbalance de clases y t\'ecnicas de balanceo}
+\label{sec:desbalance}
+
+El desbalance entre clases constituye uno de los desaf\'ios m\'as persistentes en la predicci\'on de dificultades financieras: las empresas en situaci\'on de quiebra representan t\'ipicamente una minor\'ia frente a las empresas solventes, con ratios reportados de 1:8 en \citet{Papadouli2024} (PYMES griegas) y de incluso mayor severidad en datasets con cobertura nacional. Un modelo entrenado sobre datos desbalanceados sin mitigaci\'on tiende a maximizar la precisi\'on global prediciendo de forma mayoritaria la clase dominante, produciendo alta exactitud agregada pero \textit{recall} muy bajo para la clase de inter\'es (empresas en riesgo).
+
+La t\'ecnica m\'as ampliamente utilizada en la literatura para abordar este problema es SMOTE (\textit{Synthetic Minority Over-sampling Technique}), que genera instancias sint\'eticas de la clase minoritaria mediante interpolaci\'on entre vecinos cercanos. \citet{Sun2020} propusieron un marco dinamico integrado de SMOTE con Adaboost-SVM (ADASVM-TW) y ponderaci\'on temporal sobre datos de 2.628 empresas chinas cotizadas, demostrando que la integraci\'on embebida de SMOTE en el ciclo de iteraci\'on del ensamble ---generando m\'as muestras sint\'eticas en regiones dif\'iciles y menos en regiones f\'aciles--- mejora significativamente la capacidad de reconocimiento de la clase minoritaria en comparaci\'on con la aplicaci\'on simple de SMOTE como preprocesamiento. Este hallazgo es metodol\'ogicamente relevante para el presente trabajo porque la aplicaci\'on na\"ive de SMOTE sobre todo el dataset antes de la divisi\'on entrenamiento/validaci\'on/prueba introduce fuga de informaci\'on (\textit{leakage}) y sobreestima artificialmente el desempe\~no.
+
+La buena pr\'actica metodol\'ogica fue ilustrada por \citet{Kristanti2025}, quienes aplicaron SMOTE \'unicamente dentro de los pliegues de entrenamiento, dejando intactos los conjuntos de validaci\'on y prueba, sobre un dataset de 325 empresas indonesias (3.575 observaciones 2013--2023). Su configuraci\'on logr\'o F1 de 0,95 en el modelo MLP-ANN y 0,898 en \'arbol de decisi\'on, confirmando que SMOTE bien aplicado mejora la detecci\'on minoritaria sin inflar artificialmente m\'etricas.
+
+Alternativas a SMOTE incluyen: \textbf{ADASYN} (\textit{Adaptive Synthetic Sampling}), que pondera la generaci\'on de muestras sint\'eticas seg\'un la dificultad de la frontera de decisi\'on local; \textbf{submuestreo} (\textit{random undersampling}) de la clase mayoritaria, \'util cuando el dataset es grande pero arriesgado por p\'erdida de informaci\'on; \textbf{ponderaci\'on por clase} en la funci\'on de p\'erdida, disponible nativamente en XGBoost mediante el par\'ametro \texttt{scale\_pos\_weight}; y \textbf{ensembles h\'ibridos} como SMOTE-Boost y EasyEnsemble. La decisi\'on metodol\'ogica del presente trabajo ser\'a: aplicar SMOTE exclusivamente en los pliegues de entrenamiento con validaci\'on cruzada estratificada, comparar contra la alternativa de ponderaci\'on por clase nativa de XGBoost, y seleccionar la configuraci\'on que maximice F1 y AUC-PR (m\'etricas robustas al desbalance) sobre el conjunto de prueba.
+
+\subsubsection{Patrones, limitaciones y vac\'ios en la literatura de ML}
+
+El an\'alisis cr\'itico de los estudios revisados en esta secci\'on revela cuatro patrones sistem\'aticos que, en conjunto, definen los vac\'ios que el presente trabajo busca abordar.
+
+\textbf{Limitaci\'on de escala muestral.} La mayor\'ia de los estudios emp\'iricos operan con muestras de 124 a 806 empresas \citep{Boumhidi2025, PtakChmielewska2020, Bortolotti2024}. Incluso los estudios m\'as ambiciosos en mercados emergentes, como \citet{Mahesh2025} con 547 empresas y 7.457 observaciones, representan una fracci\'on de lo que estar\'ia disponible con datos administrativos nacionales. \'Unicamente los estudios con datos de plataformas financieras \citep{Yufenyuy2024} alcanzan escalas mayores. El presente trabajo, basado en el universo SIREM de PYMES colombianas (Secci\'on~\ref{sec:niif}), opera con un orden de magnitud superior a cualquier estudio previo identificado en Am\'erica Latina sobre predicci\'on de riesgo financiero en PYMES.
+
+\textbf{Concentraci\'on geogr\'afica.} La revisi\'on sistem\'atica de \citet{Paz2025} y el an\'alisis bibliom\'etrico de \citet{Abubakar2025} coinciden en que la investigaci\'on se concentra en China, Estados Unidos y Europa occidental. Am\'erica Latina ---y Colombia en particular--- est\'a severamente subrepresentada, a pesar de contar con fuentes de datos p\'ublicas como el SIREM que posibilitar\'ian investigaci\'on a gran escala.
+
+\textbf{Ausencia de integraci\'on tecnol\'ogica.} Ninguno de los ocho estudios revisados en esta secci\'on despliega sus modelos en un sistema web accesible para usuarios finales. La investigaci\'on se mantiene en el \'ambito experimental ---publicaciones acad\'emicas con m\'etricas de desempe\~no--- sin traducirse en herramientas \'utiles para empresarios o analistas financieros.
+
+\textbf{Sesgo transversal.} La mayor\'ia de los estudios utilizan instant\'aneas de un solo a\~no (\textit{cross-section}) en lugar de datos de panel (m\'ultiples a\~nos por empresa). Solo \citet{Bortolotti2024} y \citet{Mahesh2025} incorporan la dimensi\'on temporal de manera expl\'icita, lo que limita la capacidad de capturar trayectorias de deterioro financiero.
+
+Los resultados reportados en la literatura muestran que los modelos de ensamble alcanzan un AUC promedio de 0,89--0,94 en tareas de predicci\'on de riesgo financiero, con XGBoost como el modelo m\'as frecuentemente reportado como superior \citep{Dasilas2024, Boumhidi2025, ChenGuestrin2016}. Sin embargo, estos resultados provienen predominantemente de muestras peque\~nas en mercados desarrollados o grandes asi\'aticos, dejando abierta la pregunta sobre su replicabilidad en el contexto de PYMES colombianas bajo normativa NIIF y con datos de panel a gran escala.
+
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{L{1.9cm} C{0.5cm} L{1.5cm} C{0.9cm} C{0.9cm} L{2cm} C{1cm} C{0.6cm} C{0.6cm}}
+\caption{Comparaci\'on de estudios de ML aplicados a riesgo financiero en PYMES} \label{tab:ml} \\
+\toprule
+\textbf{Autor(es)} & \textbf{A\~no} & \textbf{Pa\'is} & \textbf{N emp.} & \textbf{N obs.} & \textbf{Mejor modelo} & \textbf{AUC / Acc.} & \textbf{Panel} & \textbf{Web} \\
+\midrule
+\endfirsthead
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continuaci\'on}} \\
+\toprule
+\textbf{Autor(es)} & \textbf{A\~no} & \textbf{Pa\'is} & \textbf{N emp.} & \textbf{N obs.} & \textbf{Mejor modelo} & \textbf{AUC / Acc.} & \textbf{Panel} & \textbf{Web} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Boumhidi \& Marghich & 2025 & Marruecos & 124 & --- & XGBoost/RF & 0,93 & No & No \\
+Ptak-Chm.\ \& Matuszyk & 2020 & Polonia & 806 & --- & RSF & 78,5\% & S\'i & No \\
+Yufenyuy et al. & 2024 & EE.UU. & --- & 32.581 & Grad.\ Boost. & 93,4\% & No & No \\
+Dasilas \& Rigani (SLR) & 2024 & Global & --- & 207 est. & XGBoost & 89\% AUC & --- & --- \\
+Bortolotti \& Curi & 2024 & Italia & --- & --- & RF/XGBoost & 3 a\~nos & S\'i & No \\
+Mahesh et al. & 2025 & India & 547 & 7.457 & Logit (S-Sc.) & 92,7\% & S\'i & No \\
+Papadouli et al. & 2024 & Grecia & 1.594 & --- & AutoML & $>$66\% & No & No \\
+Paz et al.\ (SLR) & 2025 & Global & --- & 23 est. & Metaheur. & Variable & --- & --- \\
+Sujatha et al. & 2025 & India & 410 & --- & XGB/CB/LGBM & $\approx$0,93 & No & No \\
+Sun et al. & 2020 & China & 2.628 & --- & ADASVM-TW & --- & S\'i & No \\
+Kristanti et al. & 2025 & Indonesia & 325 & 3.575 & MLP+SMOTE & F1=0,95 & S\'i & No \\
+\midrule
+\textbf{Este trabajo} & \textbf{2026} & \textbf{Colombia} & \textbf{38.245} & \textbf{203.104} & \textbf{XGB+SHAP} & \textbf{Por det.} & \textbf{S\'i} & \textbf{S\'i} \\
+\bottomrule
+\end{longtable}
+}
+
+Si bien los modelos de ML han demostrado alta capacidad predictiva en entornos experimentales, la traducci\'on de estos resultados en herramientas accesibles para los tomadores de decisiones sigue siendo un desaf\'io escasamente abordado. La siguiente secci\'on examina los esfuerzos por integrar modelos anal\'iticos en sistemas web funcionales.
+
+% ===================================================================
+\subsection{Sistemas web para an\'alisis financiero}
+\label{sec:web}
+% ===================================================================
+
+\subsubsection{Panorama de herramientas comerciales y acad\'emicas}
+
+El ecosistema de herramientas anal\'iticas para evaluaci\'on financiera de PYMES se estructura en tres capas diferenciadas con vol\'umenes de investigaci\'on acad\'emica muy dispares. La primera capa la constituyen los \textbf{bureaus de cr\'edito y plataformas de \textit{scoring} crediticio} ---en Colombia, DataCr\'edito Experian y TransUnion; a nivel regional, Equifax; globalmente, FICO Score y Moody's Analytics---, que implementan modelos propietarios no documentados en literatura abierta. La segunda capa est\'a compuesta por \textbf{plataformas de \textit{business intelligence}} de prop\'osito general (Tableau, Power BI, Qlik, Looker), cuya aplicaci\'on al an\'alisis financiero corporativo ha sido ampliamente documentada en literatura gris y manuales t\'ecnicos, pero que t\'ipicamente operan como capa de visualizaci\'on sobre modelos anal\'iticos externos, no como sistemas que integren un modelo predictivo propio. La tercera capa la conforman las \textbf{plataformas fintech y RegTech} emergentes ---en Am\'erica Latina, Konfio (M\'exico), Nubank (Brasil), Addi y Rappi Pay (Colombia)---, que combinan \textit{scoring} basado en ML con interfaces web/m\'oviles dirigidas a usuarios finales. La evidencia acad\'emica publicada sobre la arquitectura interna de estas plataformas es escasa por razones competitivas, lo que deja un espacio significativo para investigaci\'on acad\'emica reproducible sobre la integraci\'on de modelos de ML con interfaces web.
+
+El alcance de estas plataformas sobre el tejido PYMES de la regi\'on, sin embargo, es limitado. \citet{Ioannou2022}, en un an\'alisis cuantitativo y cualitativo de la geograf\'ia financiera latinoamericana centrado en Brasil, M\'exico y Argentina, demostraron que a pesar del crecimiento acelerado del sector FinTech impulsado por los altos costos de intermediaci\'on financiera y pol\'iticas de inclusi\'on, la industria contin\'ua operando en los m\'argenes del sistema financiero global y de los sistemas financieros dom\'esticos, con impacto limitado sobre la inclusi\'on financiera real. Su hallazgo central ---que las FinTech no han desafiado sino reforzado la concentraci\'on geogr\'afica de los servicios financieros en Am\'erica Latina, debido a la proximidad de las empresas FinTech a los bancos establecidos, las fuentes de capital y el trabajo calificado--- es directamente relevante para el presente trabajo: las PYMES de ciudades intermedias como Ibagu\'e quedan t\'ipicamente fuera del alcance tanto de los bureaus tradicionales (enfocados en scoring individual) como de las FinTech metropolitanas (enfocadas en Bogot\'a, Medell\'in y Cali). Este vac\'io geogr\'afico-funcional refuerza la pertinencia de herramientas acad\'emicas abiertas, reproducibles y dise\~nadas espec\'ificamente para el segmento PYMES subrepresentado por el mercado comercial.
+
+\subsubsection{Marcos de decisi\'on y arquitecturas web con componentes anal\'iticos}
+
+La integraci\'on de modelos anal\'iticos en sistemas web de soporte a la decisi\'on ha sido explorada en diversos dominios, aunque con escasa presencia en el an\'alisis de riesgo financiero para PYMES. \citet{BaumontDeOliveira2021} propusieron un marco de sistema de soporte a la decisi\'on (DSS) colaborativo para el sector de agricultura vertical, incorporando evaluaci\'on de riesgo financiero con t\'ecnicas de datos imprecisos y an\'alisis probabil\'istico. Si bien su aplicaci\'on se dirige a un sector diferente, su arquitectura ---que centraliza conocimiento de m\'ultiples fuentes, modelos econ\'omicos adaptables y evaluaci\'on probabil\'istica de riesgo--- establece patrones de dise\~no relevantes para cualquier DSS financiero.
+
+En un contexto m\'as directamente vinculado al riesgo financiero, \citet{Sholapurapu2024} explor\'o herramientas basadas en IA para la evaluaci\'on de riesgo financiero en la planificaci\'on y ejecuci\'on de proyectos. Mediante un enfoque de m\'etodos mixtos que incluy\'o an\'alisis de cinco casos en construcci\'on, TI, petr\'oleo, banca y salud, demostr\'o que XGBoost y LSTM logran un RMSE de 0,85--0,72 millones USD frente a 1,5 millones de la l\'inea base, habilitando el monitoreo de riesgo financiero en tiempo real. No obstante, su enfoque se centra en proyectos de gran escala, no en PYMES.
+
+El estudio m\'as directamente relevante para el presente trabajo es el de \citet{MayorgaLira2023}, quienes desarrollaron una aplicaci\'on web para an\'alisis de riesgo crediticio utilizando IA en una cooperativa financiera peruana. Implementada en Python con Pandas y Scikit-learn, la aplicaci\'on integra redes neuronales, regresi\'on log\'istica y \'arboles de decisi\'on para automatizar decisiones de aprobaci\'on de cr\'edito. Este trabajo, el \'unico identificado en la revisi\'on acad\'emica que combina ML con una interfaz web en el contexto latinoamericano, presenta limitaciones significativas: se restringe a una \'unica cooperativa, utiliza una muestra peque\~na y no aborda la escalabilidad a miles de empresas.
+
+\subsubsection{El vac\'io de integraci\'on}
+
+A pesar de la probada efectividad de los modelos de ML para predicci\'on de riesgo financiero (Secci\'on~\ref{sec:ml}) y de la existencia de marcos arquitect\'onicos para DSS basados en web, la literatura revela una ausencia pr\'acticamente total de sistemas acad\'emicos integrados que combinen evaluaci\'on de riesgo financiero impulsada por ML con una interfaz web accesible para gerentes de PYMES o analistas financieros, particularmente en el contexto colombiano. Los tres estudios acad\'emicos revisados ---\citet{BaumontDeOliveira2021} en agricultura vertical, \citet{Sholapurapu2024} en proyectos de gran escala y \citet{MayorgaLira2023} en una cooperativa individual--- junto con la concentraci\'on metropolitana del mercado FinTech latinoamericano \citep{Ioannou2022}, ilustran que los componentes tecnol\'ogicos existen pero no han sido articulados para atender la necesidad espec\'ifica de las PYMES de ciudades intermedias colombianas. El presente trabajo busca llenar este vac\'io mediante un sistema web completo (React.js, Node.js, PostgreSQL) que integre un servicio de ML en Python para evaluaci\'on de riesgo accesible a usuarios no t\'ecnicos.
+
+La viabilidad de un sistema de an\'alisis financiero para PYMES colombianas depende no solo de la disponibilidad de modelos y tecnolog\'ia, sino tambi\'en del marco normativo que rige la informaci\'on financiera. La siguiente secci\'on examina el contexto regulatorio colombiano y las NIIF.
+
+% ===================================================================
+\subsection{Contexto colombiano y Normas Internacionales de Informaci\'on Financiera (NIIF)}
+\label{sec:niif}
+% ===================================================================
+
+\subsubsection{Marco normativo NIIF para PYMES en Colombia}
+
+Colombia adopt\'o las Normas Internacionales de Informaci\'on Financiera (NIIF) para PYMES mediante el Decreto Anexo 2 de 2015, emitido por el Departamento Administrativo de la Funci\'on P\'ublica \citep{DAFP2015}. Este decreto establece el marco t\'ecnico normativo para los preparadores de informaci\'on financiera clasificados en el Grupo 2 ---que comprende la mayor\'ia de las PYMES colombianas--- y contiene 32 secciones que abarcan la presentaci\'on de estados financieros, la clasificaci\'on y medici\'on de activos, el tratamiento de pasivos y patrimonio, el reconocimiento de ingresos, los instrumentos financieros y temas espec\'ificos como arrendamientos, intangibles, contingencias, beneficios a empleados e impuestos. La entrada en vigencia de este marco normativo en 2016 coincide precisamente con el a\~no inicial del dataset SIREM utilizado en el presente trabajo (2016--2024), lo que garantiza que toda la informaci\'on financiera procesada cumple con est\'andares contables internacionalmente comparables.
+
+El marco NIIF para PYMES no es est\'atico. \citet{Bubb2024} document\'o seis cambios t\'ecnicos mayores introducidos por la actualizaci\'on del IASB con vigencia a partir del 1 de enero de 2025: (1) un modelo de reconocimiento de ingresos en cinco pasos alineado con la NIIF 15; (2) provisionamiento de p\'erdidas crediticias esperadas (modelo ECL); (3) capitalizaci\'on de arrendamientos seg\'un la NIIF 16; (4) opci\'on de capitalizaci\'on de costos de desarrollo; (5) medici\'on a valor razonable de propiedades de inversi\'on; y (6) revelaciones de transici\'on ampliadas. Estos cambios tienen efectos potencialmente materiales sobre los indicadores financieros ---ingreso neto, EBITDA, razones de apalancamiento y posiciones tributarias--- lo que subraya la importancia de utilizar datos bajo un marco normativo consistente y de considerar posibles rupturas estructurales en los datos financieros post-2025.
+
+\subsubsection{Implicaciones para la investigaci\'on}
+
+La adopci\'on de NIIF para PYMES en Colombia tiene implicaciones significativas para la investigaci\'on en predicci\'on de riesgo financiero. En primer lugar, la estandarizaci\'on contable asegura que los estados financieros reportados al SIREM son comparables entre empresas y entre a\~nos, eliminando la heterogeneidad contable que afecta a estudios basados en datos no estandarizados. En segundo lugar, la cobertura del SIREM ---que incluye m\'as del 82\% de empresas NIIF Pymes entre todas las que reportan a la Superintendencia de Sociedades--- proporciona una representatividad que supera ampliamente la de muestras convenientes utilizadas en la mayor\'ia de los estudios revisados en la Secci\'on~\ref{sec:ml}.
+
+Sin embargo, como evidenciaron \citet{CardonaZuleta2025} en Medell\'in, la existencia de un marco regulatorio robusto no garantiza su aprovechamiento pr\'actico: muchos directivos de PYMES desconocen el potencial anal\'itico de sus propios estados financieros. Esta brecha entre la disponibilidad de datos estandarizados y su uso efectivo para la toma de decisiones constituye precisamente el espacio que el presente sistema busca ocupar, transformando datos financieros bajo NIIF en evaluaciones de riesgo interpretables y accionables.
+
+Cabe destacar que, entre los estudios de ML revisados en la Secci\'on~\ref{sec:ml}, ninguno tematiza expl\'icitamente las NIIF como marco metodol\'ogico del dataset empleado. Esta caracter\'istica posiciona al dataset del presente trabajo como una contribuci\'on novedosa al campo.
+
+\subsubsection{Sesgo de selecci\'on del SIREM y representatividad}
+\label{sec:sirem-sesgo}
+
+La fortaleza metodol\'ogica del SIREM ---estandarizaci\'on NIIF, cobertura multi-sectorial, panel de m\'as de nueve a\~nos fiscales--- conlleva simult\'aneamente un sesgo de selecci\'on que debe reconocerse expl\'icitamente para evitar sobregeneralizaci\'on de los resultados. Las PYMES reportantes al SIREM son \textbf{aquellas vigiladas por la Superintendencia de Sociedades}, condici\'on que se activa al cumplir uno de varios criterios: superar determinados umbrales de activos o ingresos, pertenecer a sectores supervisados, o tener obligaciones espec\'ificas de reporte. Este criterio excluye sistem\'aticamente tres subpoblaciones relevantes: (1) microempresas y empresas informales, que concentran la mayor proporci\'on del empleo PYMES en Colombia pero no reportan estados financieros bajo NIIF; (2) PYMES formales pero de menor tama\~no que no alcanzan los umbrales de vigilancia; y (3) empresas en proceso de cese de actividades que dejan de reportar antes de su liquidaci\'on formal.
+
+La consecuencia es que el SIREM representa el \textbf{segmento m\'as formalizado y resiliente} del universo PYMES colombiano. Si bien no existen cifras oficiales consolidadas, estimaciones cruzadas a partir de datos del DANE y Confec\'amaras sugieren que el tejido empresarial colombiano comprende cerca de 1,6 millones de unidades productivas, de las cuales aproximadamente 5\% son PYMES formales de los Grupos 1 y 2 bajo NIIF, y solo una fracci\'on de estas cumple con obligaciones de reporte ante la Superintendencia de Sociedades. El SIREM cubre entonces el estrato superior de las PYMES formales, no el universo total.
+
+Este sesgo tiene dos implicaciones para la generalizaci\'on de los resultados del presente trabajo. En primer lugar, los patrones predictivos aprendidos por el modelo reflejar\'an la din\'amica de riesgo financiero de PYMES con capacidad de reporte formal consolidada, no necesariamente la din\'amica de microempresas o empresas informales, que enfrentan patrones de riesgo cualitativamente distintos (dependencia de informalidad laboral, acceso limitado a cr\'edito formal, volatilidad macro mayor). La traducci\'on operacional del sistema hacia estos segmentos requerir\'ia fuentes de datos complementarias (informaci\'on tributaria, encuestas DANE, datos de Confec\'amaras). En segundo lugar, las empresas m\'as vulnerables al riesgo financiero extremo probablemente est\'an subrepresentadas en el SIREM por dos mecanismos: (a) las microempresas quiebran sin haber reportado nunca, y (b) las PYMES en deterioro avanzado tienden a dejar de reportar antes de la quiebra formal, lo que produce ``censura izquierda'' en los datos de panel.
+
+El an\'alisis emp\'irico de \citet{ZhangZhang2026}, aunque realizado en firmas chinas, ofrece un argumento anal\'ogico relevante: la assetizaci\'on de datos ---la capacidad de una firma de generar, gobernar y explotar datos estructurados--- se correlaciona con menor \textit{financial distress} y mayor resiliencia organizacional. En el caso colombiano, la capacidad de reporte NIIF bajo vigilancia de Supersociedades es funcionalmente equivalente a esta capacidad de assetizaci\'on de datos: las empresas del SIREM son precisamente aquellas con infraestructura contable y gobernanza informacional suficiente, lo que correlaciona sesgo de reporte con resiliencia estructural y refuerza la interpretaci\'on de que el SIREM muestrea el segmento m\'as robusto del universo PYMES.
+
+Las mitigaciones adoptadas frente a este sesgo son tres: (1) el sistema propuesto se presenta expl\'icitamente como herramienta para PYMES con reporte NIIF consolidado, no como predictor universal del tejido empresarial colombiano; (2) las conclusiones del modelo se acotan a la poblaci\'on representada, con advertencias claras en la documentaci\'on del sistema; y (3) se deja como trabajo futuro la integraci\'on con fuentes complementarias (informaci\'on de Confec\'amaras, registros de la DIAN) que permitir\'ian ampliar la cobertura hacia segmentos actualmente no representados.
+
+El uso de modelos de ML en contextos financieros regulados plantea una exigencia adicional: la explicabilidad de las predicciones. La siguiente secci\'on examina las t\'ecnicas de IA explicable que permiten interpretar las decisiones de modelos complejos.
+
+% ===================================================================
+\subsection{Interpretabilidad y AI explicable (XAI)}
+\label{sec:xai}
+% ===================================================================
+
+\subsubsection{La necesidad de explicabilidad en modelos financieros}
+
+La adopci\'on de modelos de \textit{Machine Learning} en el sector financiero ha intensificado el debate sobre la tensi\'on entre capacidad predictiva e interpretabilidad. Reguladores financieros a nivel global exigen progresivamente que los modelos utilizados para decisiones crediticias sean explicables, no solo precisos \citep{Bazarbash2019}. En este contexto, las t\'ecnicas de IA explicable (XAI, por \textit{Explainable Artificial Intelligence}) han emergido como un campo de investigaci\'on orientado a hacer transparentes las predicciones de modelos complejos sin sacrificar significativamente su desempe\~no.
+
+\citet{Bussmann2020} demostraron que la interpretabilidad y el desempe\~no predictivo no son mutuamente excluyentes. En un estudio con 15.045 PYMES del sur de Europa, los autores combinaron valores de Shapley con redes de correlaci\'on para agrupar predicciones de un modelo XGBoost (AUROC = 0,93, frente a 0,81 de la regresi\'on log\'istica) seg\'un similitud en sus explicaciones. Mediante \'arboles de expansi\'on m\'inima (MST), lograron segmentar empresas por perfiles de riesgo crediticio similares, proporcionando tanto predicciones precisas como interpretaciones \'utiles para analistas. Este enfoque es particularmente relevante para el presente trabajo, pues demuestra que XGBoost y valores de Shapley pueden aplicarse exitosamente al an\'alisis de riesgo crediticio de PYMES en contextos europeos.
+
+\subsubsection{SHAP, LIME y enfoques h\'ibridos}
+
+Entre las t\'ecnicas de XAI, SHAP (\textit{SHapley Additive exPlanations}) y LIME (\textit{Local Interpretable Model-agnostic Explanations}) constituyen los dos enfoques dominantes en la literatura de riesgo crediticio. \citet{Oyeyemi2025} integraron ambas t\'ecnicas en un marco unificado para evaluaci\'on de riesgo crediticio, comparando regresi\'on log\'istica (77,3\% de precisi\'on), Random Forest y redes neuronales. Sus resultados revelaron que SHAP y LIME identifican consistentemente el monto del pr\'estamo, la edad del prestatario y la duraci\'on del cr\'edito como los factores m\'as influyentes, lo que facilita la comunicaci\'on de resultados a tomadores de decisiones no t\'ecnicos.
+
+La comparaci\'on m\'as rigurosa entre estos enfoques fue realizada por \citet{Pathi2025}, quienes evaluaron SHAP, LIME y un enfoque h\'ibrido (SHAP para selecci\'on de caracter\'isticas principales, LIME restringido a las caracter\'isticas seleccionadas) sobre datos de LendingClub (2007--2020) con un clasificador Random Forest. Bajo condiciones de datos limpios, SHAP demostr\'o superioridad con una correlaci\'on de Spearman de 0,902 y un coeficiente Tau de Kendall de 0,855 respecto a la importancia real de las caracter\'isticas. Bajo condiciones de ruido gaussiano ($\sigma = 0,1$), el enfoque h\'ibrido result\'o superior (Spearman: 0,898). LIME, en ambas condiciones, mostr\'o la mayor variabilidad (Spearman: 0,673), lo que cuestiona su fiabilidad para aplicaciones reguladas donde la consistencia de las explicaciones es cr\'itica.
+
+Una preocupaci\'on pr\'actica adicional es la estabilidad de las explicaciones SHAP ante variaciones estoc\'asticas del modelo. \citet{Lin2024} ---en un \textit{working paper} no revisado por pares cuyos hallazgos se reportan con la debida cautela--- abordaron esta cuesti\'on ejecutando 100 modelos XGBoost id\'enticos en hiperpar\'ametros pero con diferentes semillas aleatorias sobre datos de incumplimiento de tarjetas de cr\'edito (30.000 cuentas). Sus resultados revelaron que la consistencia de los \textit{rankings} SHAP est\'a correlacionada con el nivel de importancia de la variable: las variables de alta importancia (por ejemplo, l\'imite de cr\'edito, clasificada primera en 96 de 100 modelos) mantienen \textit{rankings} altamente estables, mientras que las variables de baja importancia exhiben mayor variabilidad. Este hallazgo tiene implicaciones pr\'acticas directas: las explicaciones SHAP son confiables precisamente para las variables que m\'as importan en la decisi\'on, lo que refuerza su utilidad para comunicar resultados a usuarios finales.
+
+\subsubsection{Complejidad computacional de SHAP y viabilidad de despliegue web}
+\label{sec:xai-complejidad}
+
+Un aspecto frecuentemente omitido en la literatura de XAI aplicada a sistemas productivos es el costo computacional de las explicaciones. Los valores de Shapley cl\'asicos, calculados exactamente, requieren evaluar $O(2^M)$ coaliciones de caracter\'isticas para cada predicci\'on, donde $M$ es el n\'umero de variables ---costo prohibitivo para datasets con decenas de caracter\'isticas y miles de consultas concurrentes. La literatura reciente ha producido dos aproximaciones eficientes con perfiles de rendimiento muy distintos: \textbf{KernelSHAP}, un m\'etodo agn\'ostico al modelo que aproxima valores de Shapley mediante regresi\'on lineal ponderada sobre un conjunto muestreado de coaliciones, con complejidad que crece con el n\'umero de muestras y el tama\~no del \textit{background dataset}; y \textbf{TreeSHAP} \citep{LundbergTreeSHAP2020}, un algoritmo especializado para modelos basados en \'arboles (XGBoost, LightGBM, Random Forest, etc.) que calcula valores de Shapley exactos en tiempo polin\'omico $O(TLD^2)$, donde $T$ es el n\'umero de \'arboles, $L$ el n\'umero de hojas y $D$ la profundidad del \'arbol.
+
+La comparaci\'on emp\'irica realizada por \citet{Deng2024} sobre modelos de Random Forest con datos simulados y reales ilustra la paridad de calidad y la disparidad de costo entre las alternativas: los autores evaluaron Shapley completo, KernelSHAP, TreeSHAP y LIME en t\'erminos de su correlaci\'on con la importancia real de las variables, encontrando que los cuatro m\'etodos producen rankings globales consistentes (correlaci\'on $>$ 0,94 con la verdad conocida), mientras que LIME exhibe mayor variabilidad local. Sin embargo, el costo computacional diverge en \'ordenes de magnitud: Shapley completo es inviable para m\'as de una decena de caracter\'isticas, KernelSHAP requiere muestreo intensivo y mantiene costo lineal o superior en el tama\~no del dataset de \textit{background}, mientras que TreeSHAP opera en tiempos t\'ipicamente inferiores a 100 ms por predicci\'on sobre modelos XGBoost de complejidad moderada.
+
+Para el presente trabajo, con 18 indicadores financieros base extendidos por caracter\'isticas temporales derivadas (total estimado de 40--60 variables) y un requisito de respuesta inferior a 2 segundos por consulta en la interfaz web, \textbf{TreeSHAP constituye la opci\'on metodol\'ogicamente adecuada}: (a) es compatible nativamente con XGBoost, el algoritmo seleccionado (Secci\'on~\ref{sec:gbdt-comparison}); (b) produce valores exactos (no aproximados) sin supuestos adicionales sobre la distribuci\'on de caracter\'isticas; (c) ofrece latencia compatible con experiencia de usuario fluida en tiempo real; y (d) permite precomputar explicaciones globales (importancia agregada de variables) en lote y mantenerlas en cach\'e para consultas frecuentes. KernelSHAP se reserva como alternativa de respaldo en caso de que se introduzcan componentes del modelo no compatibles con TreeSHAP (por ejemplo, si se incorpora un predictor basado en redes neuronales para variables textuales), con la advertencia de que las explicaciones KernelSHAP requerir\'ian ejecuci\'on as\'incrona o precomputaci\'on.
+
+\subsubsection{S\'intesis de la secci\'on}
+
+La convergencia de los estudios revisados valida la elecci\'on del presente trabajo de combinar XGBoost con TreeSHAP como estrategia que logra simult\'aneamente alto desempe\~no predictivo \citep{Dasilas2024, Bussmann2020}, explicaciones consistentes con la importancia real de las caracter\'isticas \citep{Pathi2025}, estabilidad para las variables m\'as relevantes \citep{Lin2024} y latencia compatible con despliegue web en tiempo real \citep{LundbergTreeSHAP2020, Deng2024}. Esta combinaci\'on resulta especialmente adecuada para un sistema orientado a PYMES colombianas, donde la confianza del usuario en las predicciones depende fundamentalmente de la capacidad del sistema para explicar \textit{por qu\'e} una empresa es clasificada en determinado nivel de riesgo, y la viabilidad operativa depende de que dichas explicaciones se entreguen sin penalizar la experiencia de uso.
+
+Los estudios revisados hasta este punto trabajan predominantemente con datos de corte transversal. Sin embargo, la evaluaci\'on del riesgo financiero se enriquece significativamente cuando se incorpora la dimensi\'on temporal. La siguiente secci\'on examina el uso de datos de panel y series temporales en la predicci\'on financiera.
+
+% ===================================================================
+\subsection{Datos de panel y series temporales en predicci\'on financiera}
+\label{sec:panel}
+% ===================================================================
+
+\subsubsection{Ventajas del enfoque temporal}
+
+La mayor\'ia de los estudios de predicci\'on de quiebra operan con datos de corte transversal ---una observaci\'on por empresa--- lo que impide capturar din\'amicas de deterioro financiero progresivo. La importancia de incorporar la dimensi\'on temporal fue demostrada convincentemente por \citet{Zhou2022}, quienes aplicaron modelos de supervivencia estratificados a 524 empresas chinas cotizadas que se recuperaron de una primera situaci\'on de dificultad financiera. Su hallazgo m\'as relevante es que el 28,33\% de las empresas que superaron una primera crisis experimentaron una recurrencia posterior, y que el tiempo entre recuperaci\'on y recurrencia se acelera con cada evento repetido. Este resultado, indetectable con an\'alisis transversal, justifica directamente el uso de datos de panel que permitan rastrear trayectorias financieras a lo largo del tiempo.
+
+\citet{Otsuki2022} contribuyeron a esta l\'inea de investigaci\'on desarrollando un modelo de predicci\'on de quiebra basado en caracter\'isticas de series temporales financieras para empresas japonesas. Mediante an\'alisis de agrupamiento (\textit{clustering}) temporal, demostraron que los patrones din\'amicos en los estados financieros ---tendencias de deterioro, puntos de inflexi\'on, velocidad de cambio--- contienen informaci\'on predictiva que complementa la proporcionada por las razones financieras est\'aticas.
+
+Desde la perspectiva del \textit{deep learning}, \citet{Zhang2025} compararon LSTM (\textit{Long Short-Term Memory}), XGBoost y regresi\'on log\'istica para la construcci\'on de modelos de alerta temprana de riesgo financiero en 1.750 empresas de alta tecnolog\'ia chinas. El modelo LSTM, dise\~nado espec\'ificamente para capturar dependencias temporales, alcanz\'o un 97\% de \textit{recall} y un AUC de 0,9908, superando ampliamente a XGBoost (AUC: 0,9477) y regresi\'on log\'istica (AUC: 0,8772). Los autores utilizaron KernelSHAP para interpretar el modelo, identificando la raz\'on deuda-activos como la variable m\'as significativa (valor SHAP: 0,284). Si bien LSTM supera a XGBoost en el aprovechamiento nativo de patrones temporales, cabe se\~nalar que XGBoost puede incorporar caracter\'isticas temporales derivadas ---variaciones interanuales, promedios m\'oviles, tasas de cambio--- sin requerir la complejidad arquitect\'onica del \textit{deep learning}, una consideraci\'on relevante para el presente trabajo donde la interpretabilidad y la simplicidad de despliegue son prioritarias.
+
+\subsubsection{Datasets y modalidades de datos para predicci\'on de quiebra}
+
+La disponibilidad de datos es un factor cr\'itico que condiciona la investigaci\'on en predicci\'on de quiebra. \citet{Wang2024datasets} realizaron una taxonom\'ia y revisi\'on de datasets p\'ublicamente disponibles, identificando cinco principales conjuntos de datos gratuitos: el dataset americano (78.682 observaciones firma-a\~no), el polaco (UCI), el taiwan\'es (6.819 instancias), el SMEsD (3.976 PYMES) y el HAT (13.489 empresas). Los autores clasifican los datos en cinco categor\'ias ---contables, de mercado, macroecon\'omicos, relacionales y no financieros--- y documentan que la escasez de datasets v\'alidos y p\'ublicos constituye el principal cuello de botella para la investigaci\'on avanzada, especialmente para PYMES cuyos datos no est\'an disponibles en bases comerciales como Compustat u Orbis. Notablemente, el SIREM colombiano no figura entre los datasets identificados, lo que posiciona los datos del presente trabajo como una contribuci\'on novedosa a la comunidad investigativa.
+
+Exploraciones alternativas al procesamiento de datos tabulares financieros incluyen el trabajo de \citet{DzikWalczak2021}, quienes convirtieron datos tabulares de empresas polacas en representaciones de im\'agenes en escala de grises mediante simulaci\'on de Monte Carlo para aplicar redes neuronales convolucionales (CNN). Si bien las CNN alcanzaron los puntajes AUC-ROC m\'as altos en su comparaci\'on, los autores encontraron que los modelos basados en \'arboles de decisi\'on (Random Forest, XGBoost) son insensibles a las transformaciones de preprocesamiento, una ventaja pr\'actica significativa en contextos de producci\'on donde la complejidad del \textit{pipeline} de datos debe minimizarse.
+
+Finalmente, \citet{Mancisidor2024}, en un \textit{preprint} de arXiv pendiente de revisi\'on por pares, introdujeron modelos generativos multimodales que combinan datos contables, de mercado y textuales (secciones MD\&A de reportes anuales) para predicci\'on de quiebra. Su modelo CMMD (\textit{Conditional Multimodal Discriminative}) resuelve una limitaci\'on pr\'actica cr\'itica: el 40\% de las empresas carece de datos textuales accesibles, pero el modelo puede ser entrenado con todas las modalidades y predecir utilizando solo datos contables y de mercado. Si bien el presente trabajo no incorpora datos textuales, la amplitud del dataset SIREM ---204 variables financieras por observaci\'on empresa-a\~no--- proporciona un espacio de caracter\'isticas rico que, combinado con la ingenier\'ia de caracter\'isticas temporales, captura m\'ultiples dimensiones de la situaci\'on financiera empresarial.
+
+\subsubsection{Validaci\'on temporal en predicci\'on con datos de panel}
+\label{sec:validacion-temporal}
+
+El uso de datos de panel introduce un requisito metodol\'ogico frecuentemente ignorado: la estrategia de validaci\'on debe respetar la ordenaci\'on temporal de las observaciones. La validaci\'on cruzada aleatoria cl\'asica ---empleada por defecto en muchos estudios de ML financiero--- introduce fuga temporal (\textit{temporal leakage}): si observaciones de la misma empresa en a\~nos consecutivos quedan repartidas entre los pliegues de entrenamiento y prueba, el modelo se evalu\'a con informaci\'on futura sobre empresas cuyo pasado ya conoce, sobreestimando su desempe\~no en producci\'on, donde la predicci\'on debe realizarse sobre empresas y a\~nos nunca vistos. Este problema ha sido reconocido expl\'icitamente por \citet{Bortolotti2024}, quienes evaluaron la estabilidad temporal de la predicci\'on de quiebra en horizontes de uno, dos y tres a\~nos antes del evento, y por \citet{Mahesh2025}, quienes usaron un esquema de ventana deslizante en panel 2008--2022 para preservar la cronolog\'ia.
+
+Las estrategias de validaci\'on temporalmente v\'alidas incluyen: \textbf{(1) hold-out temporal (\textit{time-based split})}: entrenar con los primeros $k$ a\~nos del panel y evaluar con los \'ultimos, replicando el escenario de producci\'on; \textbf{(2) validaci\'on cruzada con ventana expansiva}: iterativamente entrenar con a\~nos $[1, t]$ y evaluar en a\~no $t+1$, avanzando $t$ en cada pliegue; \textbf{(3) validaci\'on cruzada con ventana deslizante}: entrenar con a\~nos $[t-w, t]$ y evaluar en $t+1$, controlando el ancho de la ventana; y \textbf{(4) validaci\'on cruzada por empresa}: asegurar que todas las observaciones de una misma empresa residan en el mismo pliegue, aun cuando los pliegues se determinan aleatoriamente, evitando fuga por identidad empresarial. El enfoque adoptado en el presente trabajo combina las estrategias (1) y (4): el modelo se entrena con datos de 2016--2021, se valida con 2022 y se prueba con 2023--2024, manteniendo adem\'as la integridad de las trayectorias empresariales dentro de cada partici\'on. Esta configuraci\'on replica el escenario realista en el que el sistema debe evaluar empresas en un a\~no fiscal reciente bas\'andose en patrones aprendidos de a\~nos anteriores.
+
+\subsubsection{Implicaciones para la presente investigaci\'on}
+
+La estructura de panel del dataset utilizado en este trabajo habilita tanto la ingenier\'ia de caracter\'isticas temporales (variaciones interanuales de indicadores, promedios m\'oviles, tasas de crecimiento) como el modelado con conciencia temporal y la validaci\'on temporalmente v\'alida descrita previamente. Esto atiende directamente al llamado de m\'ultiples autores \citep{Zhou2022, Otsuki2022, Zhang2025, Bortolotti2024} que argumentan a favor de enfoques longitudinales en la predicci\'on de dificultades financieras. Adicionalmente, la inclusi\'on del SIREM como fuente de datos ---no documentada previamente en la taxonom\'ia de \citet{Wang2024datasets}--- constituye una contribuci\'on a la infraestructura de datos disponible para la comunidad investigativa.
+
+Tras revisar las siete dimensiones de la literatura relevante, la siguiente secci\'on integra los hallazgos en una s\'intesis cr\'itica que identifica los vac\'ios espec\'ificos que este trabajo de investigaci\'on busca abordar.
+
+% ===================================================================
+\subsection{S\'intesis cr\'itica y vac\'ios de investigaci\'on}
+\label{sec:sintesis}
+% ===================================================================
+
+\subsubsection{S\'intesis de hallazgos principales}
+
+La revisi\'on de la literatura a trav\'es de siete ejes tem\'aticos permite identificar un conjunto de hallazgos convergentes que configuran el estado actual del conocimiento en la predicci\'on de riesgo financiero para PYMES.
+
+En primer lugar, el riesgo financiero en PYMES es un problema reconocido pero insuficientemente investigado. El an\'alisis bibliom\'etrico de \citet{Abubakar2025} identific\'o \'unicamente 19 estudios publicados en una d\'ecada (2014--2024) espec\'ificamente sobre predicci\'on de dificultades financieras en PYMES, mientras que la evidencia cualitativa de \citet{CardonaZuleta2025} en Medell\'in revel\'o que muchos empresarios colombianos desconocen incluso el concepto de riesgo financiero. Esta doble carencia ---acad\'emica y pr\'actica--- establece la pertinencia del presente trabajo.
+
+En segundo lugar, los modelos cl\'asicos de predicci\'on de quiebra, si bien fundamentales en la construcci\'on del campo, presentan una degradaci\'on temporal documentada que los inhabilita como predictores aut\'onomos en contextos contempor\'aneos. La ca\'ida de precisi\'on del modelo de \citet{Ohlson1980} del 98\% al 34,8\% reportada por \citet{Grice2003}, corroborada por \citet{Bouwmeester2020}, \citet{Papadouli2024} y el an\'alisis topol\'ogico de \citet{Qiu2020}, constituye la evidencia m\'as contundente de esta limitaci\'on y fundamenta el uso del Z''-Score \'unicamente como heur\'istica de etiquetado bajo las mitigaciones discutidas en la Secci\'on~\ref{sec:zscore-label}.
+
+En tercer lugar, las t\'ecnicas de \textit{Machine Learning}, particularmente los m\'etodos de ensamble basados en \'arboles (XGBoost, LightGBM, CatBoost), han demostrado consistentemente superioridad sobre los m\'etodos estad\'isticos cl\'asicos, con desempe\~nos pr\'acticamente equivalentes entre s\'i \citep{Sujatha2025}. La revisi\'on de 207 estudios de \citet{Dasilas2024} posiciona a XGBoost con un AUC promedio de 89\%, mientras que estudios emp\'iricos individuales reportan precisiones de 92--94\% \citep{Boumhidi2025, Yufenyuy2024, Mahesh2025}. El desbalance de clases, inherente a la predicci\'on de dificultades financieras, se aborda efectivamente mediante SMOTE aplicado dentro de los pliegues de entrenamiento \citep{Sun2020, Kristanti2025} o mediante ponderaci\'on nativa por clase.
+
+En cuarto lugar, la integraci\'on de modelos de ML en sistemas web funcionales permanece como un \'area pr\'acticamente inexplorada en la literatura acad\'emica abierta. El \'unico prototipo acad\'emico identificado en Am\'erica Latina \citep{MayorgaLira2023} se limita a una cooperativa individual, mientras que las plataformas comerciales fintech de la regi\'on \citep{Ioannou2022} operan en los m\'argenes del sistema financiero y concentran su actividad en capitales metropolitanas, dejando desatendido el tejido PYMES de ciudades intermedias.
+
+En quinto lugar, las t\'ecnicas de XAI ---particularmente TreeSHAP--- proporcionan explicaciones consistentes, estables, correlacionadas con la importancia real de las caracter\'isticas \citep{Pathi2025, Lin2024, Bussmann2020} y computacionalmente viables para despliegue web en tiempo real \citep{LundbergTreeSHAP2020, Deng2024}, habilitando la comunicaci\'on de resultados a usuarios no t\'ecnicos sin sacrificar desempe\~no predictivo ni experiencia de usuario.
+
+Finalmente, la incorporaci\'on de la dimensi\'on temporal ---mediante datos de panel en lugar de cortes transversales y validaci\'on cronol\'ogicamente v\'alida--- enriquece significativamente la predicci\'on al capturar trayectorias de deterioro y recurrencia de dificultades financieras \citep{Zhou2022, Zhang2025, Bortolotti2024}.
+
+\subsubsection{Identificaci\'on de vac\'ios}
+
+La integraci\'on de los hallazgos de las siete secciones precedentes permite identificar seis vac\'ios espec\'ificos en la literatura que el presente trabajo busca abordar (Tabla~\ref{tab:vacios}).
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz de vac\'ios de investigaci\'on y contribuci\'on del presente trabajo}
+\label{tab:vacios}
+\small
+\begin{tabularx}{\textwidth}{L{3cm} L{5.5cm} L{5.5cm}}
+\toprule
+\textbf{Dimensi\'on} & \textbf{Cobertura en la literatura} & \textbf{Presente trabajo} \\
+\midrule
+Contexto geogr\'afico & Concentraci\'on en China, EE.UU. y Europa. Am\'erica Latina escasamente representada; Colombia solo con estudios cualitativos \citep{HigueraVargas2021, CardonaZuleta2025} & PYMES colombianas bajo NIIF Pymes Grupo 2, con cobertura panel 2016--2024 \\
+\addlinespace
+Escala muestral & T\'ipicamente 124--806 empresas \citep{Boumhidi2025, PtakChmielewska2020}; m\'aximo 7.457 observaciones en mercados emergentes \citep{Mahesh2025} & Universo SIREM de PYMES vigiladas por Supersociedades, un orden de magnitud superior a los antecedentes en mercados emergentes \\
+\addlinespace
+Datos bajo NIIF & Ning\'un estudio de ML revisado tematiza expl\'icitamente las NIIF como marco metodol\'ogico & Dataset completo bajo NIIF Pymes (2016--2024) con advertencia explicita de sesgo de selecci\'on (Secci\'on~\ref{sec:sirem-sesgo}) \\
+\addlinespace
+Integraci\'on web & Solo \citet{MayorgaLira2023} (una cooperativa peruana); FinTech regional concentrada en capitales \citep{Ioannou2022} & Sistema web completo (React.js + Node.js + PostgreSQL + servicio ML en Python) para ciudades intermedias \\
+\addlinespace
+Dimensi\'on temporal & Mayor\'ia de estudios transversales; pocos aprovechan datos de panel \citep{Bortolotti2024, Mahesh2025} & Datos de panel de 9 a\~nos fiscales con ingenier\'ia de caracter\'isticas temporales y validaci\'on cronol\'ogica estricta (Secci\'on~\ref{sec:validacion-temporal}) \\
+\addlinespace
+Interpretabilidad en contexto LATAM & Estudios de XAI aplicados a cr\'edito en Europa \citep{Bussmann2020} y Asia, ninguno en PYMES latinoamericanas & XGBoost + TreeSHAP aplicado a PYMES colombianas con latencia compatible con despliegue web \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Posicionamiento de la investigaci\'on}
+
+El presente trabajo se diferencia de los antecedentes en cinco aspectos fundamentales. \textbf{Primero}, la escala del dataset ---universo de PYMES colombianas vigiladas por la Superintendencia de Sociedades con panel 2016--2024, del orden de decenas de miles de empresas y centenas de miles de observaciones empresa-a\~no--- supera en un orden de magnitud a los estudios previos m\'as ambiciosos en mercados emergentes \citep{Mahesh2025}, con reconocimiento expl\'icito del sesgo de selecci\'on asociado (Secci\'on~\ref{sec:sirem-sesgo}). \textbf{Segundo}, la utilizaci\'on de datos bajo normativa NIIF para PYMES garantiza estandarizaci\'on y comparabilidad que ning\'un estudio previo de ML en riesgo financiero ha explotado expl\'icitamente. \textbf{Tercero}, el enfoque integrado ---modelo de ML desplegado en un sistema web funcional--- aborda una brecha que la literatura identifica pero no resuelve: la traducci\'on de modelos acad\'emicos en herramientas \'utiles para tomadores de decisiones \citep{MayorgaLira2023, BaumontDeOliveira2021, Ioannou2022}. \textbf{Cuarto}, la incorporaci\'on de TreeSHAP como mecanismo de interpretabilidad, selecci\'on justificada tanto por consistencia con la importancia real \citep{Pathi2025} como por viabilidad computacional en producci\'on \citep{LundbergTreeSHAP2020, Deng2024}, responde a la creciente exigencia regulatoria y acad\'emica de transparencia en modelos financieros \citep{Bussmann2020, Bazarbash2019}. \textbf{Quinto}, la estructura de datos de panel con validaci\'on cronol\'ogicamente v\'alida habilita la captura de din\'amicas temporales que los enfoques transversales con validaci\'on aleatoria no pueden detectar sin introducir fuga de informaci\'on \citep{Zhou2022, Otsuki2022, Bortolotti2024}.
+
+Como se evidencia en la Tabla~\ref{tab:ml}, ning\'un estudio previo combina simult\'aneamente un dataset de escala nacional bajo NIIF, un modelo de ML con interpretabilidad TreeSHAP, validaci\'on temporal estricta, manejo formal del desbalance de clases e integraci\'on en un sistema web para PYMES latinoamericanas. Esta convergencia de caracter\'isticas define la contribuci\'on espec\'ifica del presente trabajo al cuerpo de conocimiento en predicci\'on de riesgo financiero para PYMES.
+
+En correspondencia con los objetivos espec\'ificos del trabajo, cada componente encuentra sustento en la literatura revisada: la selecci\'on de indicadores financieros se apoya en los hallazgos de \citet{Cultrera2016} y \citet{PtakChmielewska2020}; la elecci\'on de XGBoost como algoritmo principal se fundamenta en la evidencia de \citet{Dasilas2024}, \citet{Boumhidi2025}, \citet{Sujatha2025} y \citet{ChenGuestrin2016}; el manejo del desbalance de clases se gu\'ia por \citet{Sun2020} y \citet{Kristanti2025}; la incorporaci\'on de TreeSHAP se justifica por \citet{Bussmann2020}, \citet{Pathi2025}, \citet{LundbergTreeSHAP2020} y \citet{Deng2024}; el dise\~no de la interfaz web se informa por las experiencias de \citet{MayorgaLira2023} y \citet{BaumontDeOliveira2021}; y la validaci\'on temporal se sustenta en \citet{Bortolotti2024} y \citet{Mahesh2025}. El estado del arte revisado, por tanto, no solo contextualiza el presente trabajo sino que proporciona la base te\'orica y emp\'irica para cada decisi\'on metodol\'ogica y tecnol\'ogica adoptada.
+
+% --- Bibliografia ---
+\bibliography{references_v2}
+
+\end{document}
