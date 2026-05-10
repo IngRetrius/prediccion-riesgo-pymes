@@ -1,0 +1,16 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Metricas globales sobre el conjunto de test nacional (2023--2024, $n=50\,957$). Mejor modelo: xgboost.}
+\label{tab:metricas_test_por_modelo}
+\begin{tabular}{l rrrrr}
+\toprule
+Modelo & Acc & F1-macro & F1-pond & AUC-ROC$_{\text{OvR}}$ & AUC-PR$_{\text{macro}}$ \\
+\midrule
+xgboost & 0.9975 & 0.9972 & 0.9975 & 1.0000 & 1.0000 \\
+xgboost smote & 0.9962 & 0.9956 & 0.9962 & 1.0000 & 0.9999 \\
+random forest & 0.9950 & 0.9943 & 0.9950 & 0.9999 & 0.9998 \\
+logistic regression & 0.8210 & 0.8105 & 0.8239 & 0.9533 & 0.8932 \\
+\bottomrule
+\end{tabular}
+\end{table}
