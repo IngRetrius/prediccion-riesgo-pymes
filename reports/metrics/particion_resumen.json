@@ -1,0 +1,117 @@
+{
+  "fase": 4,
+  "random_state": 42,
+  "fuente": "data/processed/colombia_features_ml.csv",
+  "filtros": {
+    "anyo_2017_excluido_de_split_nacional": true,
+    "razon": "Fase 2 documento 99.1% de Z-Score nulo en 2017 por incompletitud SIREM",
+    "ibague_excluido_de_split_nacional": true
+  },
+  "split_temporal": {
+    "train": [
+      2016,
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "val": [
+      2022
+    ],
+    "test": [
+      2023,
+      2024
+    ]
+  },
+  "tamanos": {
+    "train_filas": 108522,
+    "train_nits": 34131,
+    "val_filas": 26878,
+    "val_nits": 26878,
+    "test_filas": 50957,
+    "test_nits": 27120,
+    "ibague_filas": 359,
+    "ibague_nits": 61
+  },
+  "distribucion_etiqueta": {
+    "train": {
+      "riesgo_alto": {
+        "n": 21241,
+        "pct": 19.57
+      },
+      "riesgo_medio": {
+        "n": 69335,
+        "pct": 63.89
+      },
+      "riesgo_bajo": {
+        "n": 17946,
+        "pct": 16.54
+      }
+    },
+    "val": {
+      "riesgo_alto": {
+        "n": 4413,
+        "pct": 16.42
+      },
+      "riesgo_medio": {
+        "n": 17160,
+        "pct": 63.84
+      },
+      "riesgo_bajo": {
+        "n": 5305,
+        "pct": 19.74
+      }
+    },
+    "test": {
+      "riesgo_alto": {
+        "n": 8403,
+        "pct": 16.49
+      },
+      "riesgo_medio": {
+        "n": 31831,
+        "pct": 62.47
+      },
+      "riesgo_bajo": {
+        "n": 10723,
+        "pct": 21.04
+      }
+    },
+    "ibague": {
+      "riesgo_alto": {
+        "n": 64,
+        "pct": 17.83
+      },
+      "riesgo_medio": {
+        "n": 257,
+        "pct": 71.59
+      },
+      "riesgo_bajo": {
+        "n": 38,
+        "pct": 10.58
+      }
+    }
+  },
+  "asserts_no_leakage_ibague": {
+    "train": true,
+    "val": true,
+    "test": true,
+    "cobertura_nits_nacionales": true
+  },
+  "criterios_aceptacion_plan": {
+    "asserts_pasan": true,
+    "tamanos_coherentes": true,
+    "delta_clases_max_pp": 4.5,
+    "delta_clases_le_5pp": true
+  },
+  "nits_ibague": {
+    "esperados_total_cci": 66,
+    "presentes_pymes": 61,
+    "ausentes": [
+      "800244693",
+      "800250097",
+      "809002625",
+      "860030412",
+      "860354473"
+    ]
+  }
+}
