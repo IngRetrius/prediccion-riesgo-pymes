@@ -1,0 +1,234 @@
+{
+  "fase": 7,
+  "random_state": 42,
+  "modelo": "xgboost",
+  "baseline_test_nacional_f1_macro": 0.9971807034692531,
+  "subsets": {
+    "ibague_TODOS": {
+      "n_obs": 359,
+      "accuracy": 0.9972144846796658,
+      "f1_macro": 0.994908306364617,
+      "f1_weighted": 0.9971986189613363,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "ibague_sin_2017": {
+      "n_obs": 328,
+      "accuracy": 0.9969512195121951,
+      "f1_macro": 0.9948197203826344,
+      "f1_weighted": 0.9969342594088193,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "ibague_solo_2017": {
+      "n_obs": 31,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": null,
+      "auc_pr_macro": null
+    }
+  },
+  "por_anyo": {
+    "2016": {
+      "n_obs": 42,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2017": {
+      "n_obs": 31,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": null,
+      "auc_pr_macro": null
+    },
+    "2018": {
+      "n_obs": 30,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2019": {
+      "n_obs": 36,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2020": {
+      "n_obs": 44,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2021": {
+      "n_obs": 43,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2022": {
+      "n_obs": 47,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2023": {
+      "n_obs": 44,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1_weighted": 1.0,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    },
+    "2024": {
+      "n_obs": 42,
+      "accuracy": 0.9761904761904762,
+      "f1_macro": 0.9640472521828455,
+      "f1_weighted": 0.9753100007337294,
+      "auc_roc_ovr_macro": 1.0,
+      "auc_pr_macro": 1.0
+    }
+  },
+  "reporte_clase_sin_2017": {
+    "riesgo_alto": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 64.0
+    },
+    "riesgo_bajo": {
+      "precision": 1.0,
+      "recall": 0.9736842105263158,
+      "f1-score": 0.9866666666666667,
+      "support": 38.0
+    },
+    "riesgo_medio": {
+      "precision": 0.9955947136563876,
+      "recall": 1.0,
+      "f1-score": 0.9977924944812362,
+      "support": 226.0
+    },
+    "accuracy": 0.9969512195121951,
+    "macro avg": {
+      "precision": 0.998531571218796,
+      "recall": 0.9912280701754387,
+      "f1-score": 0.9948197203826344,
+      "support": 328.0
+    },
+    "weighted avg": {
+      "precision": 0.9969646502632428,
+      "recall": 0.9969512195121951,
+      "f1-score": 0.9969342594088193,
+      "support": 328.0
+    }
+  },
+  "reporte_clase_todos": {
+    "riesgo_alto": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 64.0
+    },
+    "riesgo_bajo": {
+      "precision": 1.0,
+      "recall": 0.9736842105263158,
+      "f1-score": 0.9866666666666667,
+      "support": 38.0
+    },
+    "riesgo_medio": {
+      "precision": 0.9961240310077519,
+      "recall": 1.0,
+      "f1-score": 0.9980582524271845,
+      "support": 257.0
+    },
+    "accuracy": 0.9972144846796658,
+    "macro avg": {
+      "precision": 0.9987080103359173,
+      "recall": 0.9912280701754387,
+      "f1-score": 0.994908306364617,
+      "support": 359.0
+    },
+    "weighted avg": {
+      "precision": 0.9972252812506748,
+      "recall": 0.9972144846796658,
+      "f1-score": 0.9971986189613363,
+      "support": 359.0
+    }
+  },
+  "distribucion_clases": {
+    "nacional_test_real": {
+      "riesgo_alto": 0.1649037423710187,
+      "riesgo_bajo": 0.21043232529387523,
+      "riesgo_medio": 0.6246639323351061
+    },
+    "ibague_real_sin_2017": {
+      "riesgo_alto": 0.1951219512195122,
+      "riesgo_bajo": 0.11585365853658537,
+      "riesgo_medio": 0.6890243902439024
+    },
+    "ibague_predicho_sin_2017": {
+      "riesgo_alto": 0.1951219512195122,
+      "riesgo_bajo": 0.11280487804878049,
+      "riesgo_medio": 0.6920731707317073
+    }
+  },
+  "criterio_7_3_1": {
+    "f1_macro_test_nacional": 0.9971807034692531,
+    "f1_macro_ibague_sin_2017": 0.9948197203826344,
+    "gap_pp": 0.23609830866186954,
+    "umbral_pp": 10.0,
+    "pasa": true
+  },
+  "errores_explicaciones": [
+    {
+      "NIT_LIMPIO": "800043005",
+      "ANIO": 2024,
+      "real": "riesgo_bajo",
+      "pred": "riesgo_medio",
+      "prob_max": 0.6563013195991516,
+      "sector": "industria",
+      "z_score": 6.95294330664944,
+      "razones": [
+        "modelo mas conservador que heuristica en zona sana (Z=6.95, real=bajo, pred=medio) -- el modelo capta senales temporales/operativas que la heuristica nivel-base ignora",
+        "volatilidad operativa interanual: cobertura_intereses_d1=-0.95",
+        "modelo con baja confianza (prob_max=0.66)"
+      ]
+    }
+  ],
+  "pymes_evolucion_temporal": [
+    {
+      "NIT_LIMPIO": "800049896",
+      "n_anyos": 9
+    },
+    {
+      "NIT_LIMPIO": "800060288",
+      "n_anyos": 9
+    },
+    {
+      "NIT_LIMPIO": "800054106",
+      "n_anyos": 9
+    },
+    {
+      "NIT_LIMPIO": "800052287",
+      "n_anyos": 9
+    },
+    {
+      "NIT_LIMPIO": "800051970",
+      "n_anyos": 9
+    }
+  ]
+}

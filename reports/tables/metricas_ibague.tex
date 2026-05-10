@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\caption{Validacion del modelo XGBoost en el holdout Ibague (61 PYMES)}
+\label{tab:metricas_ibague}
+\begin{tabular}{lrrrrr}
+\toprule
+Subconjunto & N & Accuracy & F1-macro & F1-pond. & AUC-ROC OvR \\
+\midrule
+ibague\_TODOS & 359 & 0.9972 & 0.9949 & 0.9972 & 1.0000 \\
+ibague\_sin\_2017 & 328 & 0.9970 & 0.9948 & 0.9969 & 1.0000 \\
+ibague\_solo\_2017 & 31 & 1.0000 & 1.0000 & 1.0000 & -- \\
+\midrule
+Test nacional (referencia) & 50957 & 0.9975 & 0.9972 & 0.9975 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
