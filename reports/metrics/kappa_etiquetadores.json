@@ -1,0 +1,14 @@
+{
+  "kappa_A_vs_B": 0.2340308122835042,
+  "kappa_A_vs_C": 0.2025936393092037,
+  "kappa_B_vs_C": 0.44632967475587293,
+  "n_filas_evaluadas": 184214,
+  "distribucion_etiqueta_final": {
+    "riesgo_medio": 0.6642,
+    "riesgo_alto": 0.1683,
+    "riesgo_bajo": 0.1675
+  },
+  "criterio_5pct_por_clase": true,
+  "criterio_deterioro_2020": false,
+  "deterioro_2020_pp": -0.11
+}
