@@ -1,0 +1,325 @@
+{
+  "fase": 5,
+  "random_state": 42,
+  "feature_count": 71,
+  "feature_cols": [
+    "razon_corriente",
+    "prueba_acida",
+    "capital_trabajo",
+    "razon_efectivo",
+    "margen_bruto",
+    "margen_operacional",
+    "margen_neto",
+    "roa",
+    "roe",
+    "razon_deuda",
+    "deuda_patrimonio",
+    "apalancamiento",
+    "cobertura_intereses",
+    "rotacion_activos",
+    "rotacion_inventarios",
+    "rotacion_cartera",
+    "dias_inventario",
+    "dias_cartera",
+    "z_score_altman",
+    "razon_corriente_d1",
+    "prueba_acida_d1",
+    "capital_trabajo_d1",
+    "razon_efectivo_d1",
+    "margen_bruto_d1",
+    "margen_operacional_d1",
+    "margen_neto_d1",
+    "roa_d1",
+    "roe_d1",
+    "razon_deuda_d1",
+    "deuda_patrimonio_d1",
+    "apalancamiento_d1",
+    "cobertura_intereses_d1",
+    "rotacion_activos_d1",
+    "rotacion_inventarios_d1",
+    "rotacion_cartera_d1",
+    "dias_inventario_d1",
+    "dias_cartera_d1",
+    "roa_g2",
+    "margen_neto_g2",
+    "razon_deuda_g2",
+    "roa_g3",
+    "margen_neto_g3",
+    "razon_deuda_g3",
+    "log_total_activos",
+    "log_ingresos",
+    "ratio_activos_corr",
+    "ratio_pasivos_corr",
+    "ciiu_agricola",
+    "ciiu_alojamiento",
+    "ciiu_apoyo_emp",
+    "ciiu_comercio",
+    "ciiu_construccion",
+    "ciiu_financiero",
+    "ciiu_industria",
+    "ciiu_info_com",
+    "ciiu_inmobiliario",
+    "ciiu_otros",
+    "ciiu_profesional",
+    "ciiu_sin_ciiu",
+    "sociedad_ltda",
+    "sociedad_otra",
+    "sociedad_sa",
+    "sociedad_sas",
+    "depto_antioquia",
+    "depto_atlantico",
+    "depto_bogota",
+    "depto_cundinamarca",
+    "depto_otros",
+    "depto_valle",
+    "anyo_num",
+    "covid_2020"
+  ],
+  "label_encoder_classes": [
+    "riesgo_alto",
+    "riesgo_bajo",
+    "riesgo_medio"
+  ],
+  "criterio_seleccion": "F1-macro maximo sobre validation set (2022)",
+  "modelos": {
+    "logistic_regression": {
+      "tipo": "sklearn.linear_model.LogisticRegression",
+      "pipeline": "SimpleImputer(median) -> StandardScaler -> LR",
+      "parametros_fijos": {
+        "multi_class": "multinomial",
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 2000
+      },
+      "grid_explorado": {
+        "C": [
+          0.01,
+          0.1,
+          1.0,
+          10.0
+        ]
+      },
+      "mejor_hp": {
+        "C": 10.0
+      },
+      "metricas_val": {
+        "f1_macro_train": 0.8073840536263175,
+        "f1_macro_val": 0.7993038379230158,
+        "gap_pp": 0.8080215703301641
+      },
+      "reporte_por_clase": {
+        "riesgo_alto": {
+          "precision": 0.688680880568556,
+          "recall": 0.9002945841830954,
+          "f1": 0.7803967786289531,
+          "support": 4413
+        },
+        "riesgo_bajo": {
+          "precision": 0.6686382578303536,
+          "recall": 0.9376060320452403,
+          "f1": 0.78060263653484,
+          "support": 5305
+        },
+        "riesgo_medio": {
+          "precision": 0.9437454279444039,
+          "recall": 0.7518065268065268,
+          "f1": 0.8369120986052546,
+          "support": 17160
+        }
+      }
+    },
+    "random_forest": {
+      "tipo": "sklearn.ensemble.RandomForestClassifier",
+      "pipeline": "SimpleImputer(median) -> RF",
+      "parametros_fijos": {
+        "class_weight": "balanced_subsample",
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "grid_explorado": {
+        "n_estimators": [
+          100,
+          300,
+          500
+        ],
+        "max_depth": [
+          null,
+          10,
+          20
+        ],
+        "min_samples_split": [
+          2,
+          10
+        ]
+      },
+      "mejor_hp": {
+        "n_estimators": 500,
+        "max_depth": null,
+        "min_samples_split": 10
+      },
+      "metricas_val": {
+        "f1_macro_train": 0.999899102605153,
+        "f1_macro_val": 0.9948068609570387,
+        "gap_pp": 0.5092241648114282
+      },
+      "reporte_por_clase": {
+        "riesgo_alto": {
+          "precision": 0.9963578420213977,
+          "recall": 0.9918422841604351,
+          "f1": 0.9940949352714059,
+          "support": 4413
+        },
+        "riesgo_bajo": {
+          "precision": 0.9971531599924084,
+          "recall": 0.9903864278982092,
+          "f1": 0.9937582750141858,
+          "support": 5305
+        },
+        "riesgo_medio": {
+          "precision": 0.99494656133829,
+          "recall": 0.9981934731934732,
+          "f1": 0.9965673725855247,
+          "support": 17160
+        }
+      }
+    },
+    "xgboost": {
+      "tipo": "xgboost.XGBClassifier",
+      "pipeline": "XGB sobre features crudos (NaN nativo) + sample_weight balanced",
+      "parametros_fijos": {
+        "objective": "multi:softprob",
+        "num_class": 3,
+        "eval_metric": "mlogloss",
+        "tree_method": "hist",
+        "early_stopping_rounds": 30,
+        "n_estimators_cap": 1000
+      },
+      "grid_explorado": {
+        "max_depth": [
+          4,
+          6,
+          8
+        ],
+        "learning_rate": [
+          0.05,
+          0.1
+        ],
+        "subsample": [
+          0.8,
+          1.0
+        ],
+        "colsample_bytree": [
+          0.8,
+          1.0
+        ]
+      },
+      "mejor_hp": {
+        "max_depth": 8,
+        "learning_rate": 0.1,
+        "subsample": 0.8,
+        "colsample_bytree": 1.0,
+        "best_iteration": 221,
+        "n_estimators_cap": 1000,
+        "early_stopping_rounds": 30
+      },
+      "metricas_val": {
+        "f1_macro_train": 1.0,
+        "f1_macro_val": 0.9978802349321,
+        "gap_pp": 0.21197650679000146
+      },
+      "reporte_por_clase": {
+        "riesgo_alto": {
+          "precision": 0.9988669839111716,
+          "recall": 0.9988669839111716,
+          "f1": 0.9988669839111716,
+          "support": 4413
+        },
+        "riesgo_bajo": {
+          "precision": 0.9960429621254946,
+          "recall": 0.9964184731385486,
+          "f1": 0.9962306822465133,
+          "support": 5305
+        },
+        "riesgo_medio": {
+          "precision": 0.9986012355752418,
+          "recall": 0.9984848484848485,
+          "f1": 0.9985430386386153,
+          "support": 17160
+        }
+      }
+    },
+    "xgboost_smote": {
+      "tipo": "xgboost.XGBClassifier + imblearn.SMOTE",
+      "pipeline": "SimpleImputer(median) -> SMOTE(k=5) -> XGB (sin sample_weight)",
+      "parametros_fijos": {
+        "objective": "multi:softprob",
+        "num_class": 3,
+        "eval_metric": "mlogloss",
+        "tree_method": "hist",
+        "early_stopping_rounds": 30,
+        "n_estimators_cap": 1000,
+        "smote_k_neighbors": 5
+      },
+      "grid_explorado": {
+        "max_depth": [
+          4,
+          6,
+          8
+        ],
+        "learning_rate": [
+          0.05,
+          0.1
+        ],
+        "subsample": [
+          0.8,
+          1.0
+        ],
+        "colsample_bytree": [
+          0.8,
+          1.0
+        ]
+      },
+      "mejor_hp": {
+        "max_depth": 4,
+        "learning_rate": 0.05,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "best_iteration": 996,
+        "n_estimators_cap": 1000,
+        "early_stopping_rounds": 30,
+        "smote_k_neighbors": 5
+      },
+      "metricas_val": {
+        "f1_macro_train": 0.9997922784364244,
+        "f1_macro_val": 0.9957014832177986,
+        "gap_pp": 0.40907952186257646
+      },
+      "reporte_por_clase": {
+        "riesgo_alto": {
+          "precision": 0.9963611553331817,
+          "recall": 0.9927486970314978,
+          "f1": 0.9945516458569807,
+          "support": 4413
+        },
+        "riesgo_bajo": {
+          "precision": 0.9964110313562523,
+          "recall": 0.9943449575871819,
+          "f1": 0.9953769223511651,
+          "support": 5305
+        },
+        "riesgo_medio": {
+          "precision": 0.9963926223308315,
+          "recall": 0.997960372960373,
+          "f1": 0.9971758814452499,
+          "support": 17160
+        }
+      }
+    }
+  },
+  "criterios_aceptacion_plan": {
+    "mejor_xgb_supera_LR_en_pp": 19.857639700908415,
+    "mejor_xgb_supera_LR_ge_5pp": true,
+    "gap_max_modelos": 0.8080215703301641,
+    "gap_max_lt_10pp": true
+  }
+}

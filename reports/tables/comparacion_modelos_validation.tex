@@ -1,0 +1,18 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Comparacion de los cuatro modelos sobre el conjunto de validacion (2022).
+F1-macro en train y val + gap en puntos porcentuales (PLAN 5.3 exige gap < 10pp).
+Mejor XGBoost vs LR baseline en val: +19.86pp.}
+\label{tab:comparacion_modelos_validation}
+\begin{tabular}{l rrr}
+\toprule
+Modelo & F1 train & F1 val & gap (pp) \\
+\midrule
+XGBoost & 1.0000 & 0.9979 & +0.21 \\
+XGBoost+SMOTE & 0.9998 & 0.9957 & +0.41 \\
+RandomForest & 0.9999 & 0.9948 & +0.51 \\
+LogisticRegression & 0.8074 & 0.7993 & +0.81 \\
+\bottomrule
+\end{tabular}
+\end{table}
