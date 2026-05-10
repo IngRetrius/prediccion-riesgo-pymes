@@ -1,0 +1,53 @@
+{
+  "shape": [
+    203104,
+    77
+  ],
+  "features_ml_total": 71,
+  "familias": {
+    "indicadores_base": 18,
+    "z_score": 1,
+    "deltas_d1": 18,
+    "crecimientos_g2g3": 6,
+    "escala_estructura": 4,
+    "anyo_numerico": 2,
+    "dummies": 22
+  },
+  "etiqueta_final_counts": {
+    "riesgo_medio": 134900,
+    "riesgo_alto": 34177,
+    "riesgo_bajo": 34027
+  },
+  "empresas_unicas": 38245,
+  "duplicados_id_anyo": 0,
+  "completitud_nuevos_features_pct": {
+    "dias_inventario_d1": 42.88,
+    "rotacion_inventarios_d1": 43.25,
+    "roa_g3": 43.52,
+    "razon_deuda_g3": 43.64,
+    "margen_neto_g3": 46.65,
+    "cobertura_intereses_d1": 48.97,
+    "roa_g2": 57.41,
+    "razon_deuda_g2": 57.59,
+    "margen_neto_g2": 59.77,
+    "rotacion_activos_d1": 62.34,
+    "razon_efectivo_d1": 64.69,
+    "prueba_acida_d1": 65.44,
+    "razon_corriente_d1": 65.44,
+    "capital_trabajo_d1": 65.72,
+    "roe_d1": 66.1,
+    "roa_d1": 66.1,
+    "razon_deuda_d1": 66.34,
+    "deuda_patrimonio_d1": 66.34,
+    "apalancamiento_d1": 66.44,
+    "dias_cartera_d1": 71.72,
+    "rotacion_cartera_d1": 72.86,
+    "margen_bruto_d1": 74.81,
+    "margen_neto_d1": 74.87,
+    "margen_operacional_d1": 74.88,
+    "ratio_pasivos_corr": 90.84,
+    "ratio_activos_corr": 91.68,
+    "log_total_activos": 91.7,
+    "log_ingresos": 100.0
+  }
+}
