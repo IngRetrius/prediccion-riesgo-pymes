@@ -1,176 +1,174 @@
-# Analisis de Riesgo Financiero en PYMES — Trabajo Final IA
+# Prediccion de Riesgo Financiero en PYMES Colombianas
 
-Trabajo final de la asignatura **Inteligencia Artificial**. Construimos un modelo de Machine Learning para clasificar el riesgo financiero de PYMES colombianas a partir de estados financieros publicos del SIREM (Superintendencia de Sociedades).
+Trabajo final de la asignatura **Inteligencia Artificial** (Universidad de Ibague). Modelo de Machine Learning supervisado que clasifica el nivel de riesgo financiero (bajo / medio / alto) de PYMES colombianas a partir de sus estados financieros NIIF, usando datos publicos del SIREM (Superintendencia de Sociedades) entre 2016 y 2024, con validacion regional sobre PYMES de Ibague identificadas via cruce con la Camara de Comercio.
 
-## Convencion de entrenamiento y validacion
+## Resultado principal
 
-- **Entrenamiento y desarrollo**: dataset **nacional** (38,245 PYMES NIIF Pymes, 2016–2024, 203,104 observaciones empresa-ano).
-- **Validacion / caso de estudio**: subconjunto de **Ibague** (61 PYMES identificadas en SIREM via cruce con la Camara de Comercio).
+| Metrica | Test nacional ($n=50\,957$) | Holdout Ibague ($n=359$) |
+|---|---|---|
+| **F1-macro** | **0,9972** | **0,9948** |
+| AUC-ROC OvR macro | 0,99999 | 1,0000 |
+| AUC-PR macro | 0,99997 | -- |
+| Errores totales | 127 / 50\,957 (0,25%) | 1 / 359 (0,28%) |
 
-Esta separacion nacional → Ibague evita data leakage: el modelo no ve a las empresas de Ibague durante el entrenamiento y se reserva como caso de prueba final.
+XGBoost (`max_depth=8`, `learning_rate=0,1`, `sample_weight=balanced`, `early_stopping_rounds=30`) supera a:
+
+- la regresion logistica baseline por **+18,7 pp** en F1-macro de test,
+- la heuristica de Altman (terciles empiricos) por **+30,8 pp**,
+- la heuristica de Altman (umbrales originales 1,1 / 2,6) por **+56,0 pp**.
+
+Las features mas importantes segun TreeSHAP son `z_score_altman`, `margen_neto`, `razon_corriente`, `cobertura_intereses` y `razon_deuda`.
+
+## Documentos entregables
+
+| Documento | Ruta | Contenido |
+|---|---|---|
+| Informe final | [`docs/informe_final/informe_final.pdf`](docs/informe_final/informe_final.pdf) | 33 paginas, 11 secciones, 36 referencias citadas |
+| Diapositivas | [`docs/diapositivas/diapositivas.pdf`](docs/diapositivas/diapositivas.pdf) | 20 slides Beamer (16:9, tema Madrid) |
+| Estado del arte | [`docs/literatura/Estado del arte/latex/estado_del_arte_v2.pdf`](docs/literatura/Estado%20del%20arte/latex/estado_del_arte_v2.pdf) | 48 referencias, 7 ejes tematicos |
+| Plan operativo | [`PLAN_DE_TRABAJO.md`](PLAN_DE_TRABAJO.md) | 11 fases con criterios de aceptacion, dependencias, pitfalls |
+| Diccionario de datos | [`docs/DICCIONARIO_DATOS_ML.md`](docs/DICCIONARIO_DATOS_ML.md) | Definicion de los 18 indicadores y sus formulas |
+| Reporte ETL | [`reports/REPORTE_ETL_NACIONAL.md`](reports/REPORTE_ETL_NACIONAL.md) | Detalle del ETL nacional y anomalias detectadas |
+
+## Pipeline ejecutado
+
+Diez notebooks numerados producen un dataset reproducible y un modelo evaluado:
+
+```
+01_etl_camara_comercio.ipynb        Cruce CCI Ibague <-> SIREM (61 NITs)
+02_etl_nacional_pymes.ipynb         Consolidacion de los 4 estados financieros
+                                    -> data/processed/colombia_consolidado_pymes.csv
+03_indicadores_financieros.ipynb    18 indicadores + Z''-Score Altman
+04_etiquetado_riesgo.ipynb          Etiqueta triangulada (Z'' + heuristica + cuartiles)
+05_feature_engineering.ipynb        71 features (deltas, crecimientos, dummies, escala)
+06_particion_datos.ipynb            Split temporal + holdout Ibague
+07_modelado.ipynb                   LR / RF / XGBoost / XGBoost+SMOTE
+08_evaluacion_shap.ipynb            Test, SHAP global y local
+09_validacion_ibague.ipynb          Aplicacion al holdout regional
+10_discusion_comparativa.ipynb      vs Altman, vs etiquetado manual, robustez
+```
+
+### Convencion train / validation / test
+
+- **Train**: 2016, 2018-2021 (108\,522 obs.)
+- **Validation**: 2022 (26\,878 obs.)
+- **Test**: 2023-2024 (50\,957 obs.)
+- **Holdout Ibague**: 61 PYMES, 359 obs. (incluye 2017 para diagnostico)
+
+El ano 2017 se excluye del split nacional debido a una anomalia de captura del SIREM (99,1% de Z-Score nulos). Los 61 NITs de Ibague nunca aparecen en train / val / test (cuatro asserts de no-leakage verificados).
 
 ## Estructura del repositorio
 
 ```
 .
-├── data/
-│   ├── processed/   CSVs consolidados generados por el ETL (LFS-tracked)
-│   └── ibague/      Subconjunto de PYMES de Ibague para validacion
-├── notebooks/
-│   ├── 01_etl_camara_comercio.ipynb   ETL Camara de Comercio + cruce SIREM
-│   └── 02_etl_nacional_pymes.ipynb    ETL nacional NIIF Pymes (consolidacion)
-├── src/
-│   ├── indicadores.py   18 indicadores financieros + Z''-Score Altman
-│   ├── etl_utils.py     Carga del consolidado + normalizacion de mojibake
-│   └── __init__.py
-├── reports/
-│   ├── REPORTE_ETL_NACIONAL.md   Reporte detallado del ETL ya ejecutado
-│   └── figures/                   Figuras generadas por los notebooks
-├── docs/
-│   ├── DICCIONARIO_DATOS_ML.md   Diccionario de datos e indicadores
-│   ├── DATASET_SOURCES.md        Origen y descarga de los CSV crudos
-│   ├── GUIA_ESTADO_DEL_ARTE.md   Guia metodologica del estado del arte
-│   └── literatura/
-│       ├── Estado del arte/      LaTeX, .bib y PDFs por eje tematico
-│       ├── PROPUESTA_FINAL_Trabajo_Grado.pdf
-│       └── GUIA_COMPLETA_Investigacion_Primera_Tesis.pdf
-├── models/          (gitignored) Modelos entrenados
-├── requirements.txt
-├── README.md
-├── CLAUDE.md
-├── .gitignore
-└── .gitattributes   Reglas Git LFS para los CSVs procesados
+|-- data/
+|   |-- processed/                     CSVs consolidados (LFS-tracked)
+|   |   |-- colombia_consolidado_pymes.csv     203\,104 x 230 -- salida del ETL
+|   |   |-- colombia_indicadores_pymes.csv     203\,104 x 23  -- 18 indicadores + Z''
+|   |   |-- colombia_etiquetas_riesgo.csv      203\,104 x 9   -- etiqueta triangulada
+|   |   |-- colombia_features_ml.csv           203\,104 x 77  -- features ML
+|   |   `-- nacional_{train,val,test}.csv      splits temporales sin Ibague
+|   `-- ibague/                        holdout regional + predicciones
+|-- notebooks/                         pipeline numerado 01-10
+|-- src/
+|   |-- indicadores.py                 18 indicadores + Z''-Score
+|   `-- etl_utils.py                   carga del consolidado + normalizacion mojibake
+|-- scripts/                           generadores nbformat de notebooks
+|-- reports/
+|   |-- figures/                       20 figuras a 300 DPI
+|   |-- tables/                        10 tablas LaTeX
+|   |-- metrics/                       7 JSONs con metricas y resumenes
+|   `-- REPORTE_ETL_NACIONAL.md
+|-- docs/
+|   |-- informe_final/                 .tex + .bib + .pdf (33 pp)
+|   |-- diapositivas/                  .tex + .pdf (20 slides)
+|   |-- literatura/                    estado del arte + bibliografia
+|   |-- DICCIONARIO_DATOS_ML.md
+|   |-- DATASET_SOURCES.md
+|   `-- GUIA_ESTADO_DEL_ARTE.md
+|-- models/                            (gitignored) joblib serializados
+|-- PLAN_DE_TRABAJO.md
+|-- requirements.txt
+`-- README.md
 ```
 
 ## Datos
 
-| Dataset | Origen | Tamano | Necesidad | Estado |
-|---|---|---|---|---|
-| 4 CSVs SIREM crudos | Supersociedades | ~9.17 GB | **No requerido** para este trabajo | gitignored |
-| Camara de Comercio Ibague | CCI | ~25 MB | **No requerido** para este trabajo | gitignored |
-| 5 CSVs procesados | Notebook 02 | ~367 MB | **Si requerido** | en `data/processed/` |
-
-Los **datos crudos no son necesarios** para este trabajo final de IA porque el ETL ya fue ejecutado y los archivos consolidados estan disponibles. Solo se requeririan si se quisiera re-correr el ETL (e.g. nuevos cortes del SIREM).
-
-### Como conseguir los CSVs procesados
-
-Los archivos viven como punteros Git LFS en el repositorio principal `IngRetrius/Tesis`. **No se necesita instalar `git-lfs`**: GitHub sirve los archivos directamente a traves de `media.githubusercontent.com`.
+Los CSVs procesados se versionan via Git LFS (`.gitattributes` declara `*.csv filter=lfs`):
 
 ```bash
-cd data/processed
-for f in colombia_consolidado_pymes.csv colombia_situacion_financiera_pymes.csv \
-         colombia_resultado_integral_pymes.csv colombia_flujo_efectivo_pymes.csv \
-         colombia_metadata_pymes.csv; do
-  curl -L -o "$f" "https://media.githubusercontent.com/media/IngRetrius/Tesis/main/data/$f"
-done
+git lfs install
+git lfs pull
 ```
 
-Verificar tamanos esperados:
+Los CSVs crudos del SIREM (~9,17 GB, 4 archivos) **no son necesarios** para reproducir el modelo; la consolidacion ya esta en `data/processed/`. Si se requiere re-correr el ETL desde fuente cruda, ver [`docs/DATASET_SOURCES.md`](docs/DATASET_SOURCES.md) para los enlaces de descarga.
 
-| Archivo | Filas (incluye header) | Tamano |
-|---|---|---|
-| colombia_consolidado_pymes.csv | 203,105 | 214 MB |
-| colombia_situacion_financiera_pymes.csv | 202,502 | 63 MB |
-| colombia_flujo_efectivo_pymes.csv | 203,105 | 49 MB |
-| colombia_resultado_integral_pymes.csv | 203,104 | 27 MB |
-| colombia_metadata_pymes.csv | 38,246 | 16 MB |
-
-> Nota sobre encoding: los CSVs tienen mojibake (`ï¿½` por vocales tildadas) en 105 nombres de columna. Usar siempre `src.etl_utils.cargar_consolidado()` o llamar `normalizar_columnas()` despues de `pd.read_csv()` para obtener nombres ASCII limpios. Las constantes en `src/indicadores.py` asumen los nombres ya normalizados.
-
-## Pipeline planeado
-
-```
-data crudo (SIREM + CCI)
-    │
-    ├─ 01_etl_camara_comercio.ipynb     [HECHO]
-    │  cruce CCI <-> SIREM, normaliza NIT (descubre logica de DV)
-    │
-    └─ 02_etl_nacional_pymes.ipynb      [HECHO]
-       consolida los 4 estados financieros del SIREM (NIIF Pymes)
-       │
-       ▼
-   data/processed/colombia_consolidado_pymes.csv   (203K obs x 230 cols)
-
-   ┌────────────────────────────────────────────────────────────────┐
-   │ Pendientes:                                                    │
-   │                                                                │
-   │  03  Calculo de los 18 indicadores + Z''-Score Altman          │
-   │      (usar src/indicadores.py)                                 │
-   │                                                                │
-   │  04  Etiquetado de riesgo (bajo/medio/alto)                    │
-   │      Z''-Score por terciles + reglas heuristicas como          │
-   │      triangulacion (sec. 2.3 del estado del arte v2)           │
-   │                                                                │
-   │  05  Modelado: Logistica baseline -> Random Forest -> XGBoost  │
-   │      Split temporal: train 2016-2021 / val 2022 / test 2023-24 │
-   │      SMOTE solo dentro de los pliegues de entrenamiento        │
-   │                                                                │
-   │  06  Evaluacion + interpretabilidad                            │
-   │      F1-macro, AUC-PR, matriz de confusion                     │
-   │      TreeSHAP (compatible nativamente con XGBoost)             │
-   │                                                                │
-   │  07  Validacion sobre PYMES de Ibague                          │
-   │      Aplicar el modelo nacional al subconjunto reservado       │
-   │      Comparar predicciones con indicadores observados          │
-   └────────────────────────────────────────────────────────────────┘
-```
-
-## Decisiones metodologicas
-
-Basadas en `docs/literatura/Estado del arte/latex/estado_del_arte_v2.tex`:
-
-- **Etiquetado**: Z''-Score Altman para mercados emergentes con umbrales calibrados por terciles del dataset (no los originales).
-- **Modelo principal**: XGBoost — justificado por integracion nativa con TreeSHAP, latencia rapida, paridad de desempeno con LightGBM/CatBoost.
-- **Baselines**: Regresion logistica (interpretable) + Random Forest.
-- **Desbalance de clases**: SMOTE aplicado solo dentro de pliegues de entrenamiento, comparado contra `scale_pos_weight` nativo de XGBoost.
-- **Validacion temporal**: train 2016–2021, val 2022, test 2023–2024 (sin leakage por empresa).
-- **Interpretabilidad**: TreeSHAP para explicaciones globales y locales.
+> **Nota sobre encoding**: el consolidado tiene mojibake (`ï¿½` por vocales tildadas) en 105 nombres de columna. **Cargar siempre via** `src.etl_utils.cargar_consolidado()` -- aplica `normalizar_columnas()` y entrega nombres ASCII limpios. Las constantes en `src/indicadores.py` asumen ya esa normalizacion.
 
 ## Setup
 
 ```bash
-# Crear entorno virtual
 python -m venv venv
+source venv/bin/activate            # Linux/Mac
+.\venv\Scripts\activate             # Windows
 
-# Activar
-.\venv\Scripts\activate          # Windows
-source venv/bin/activate         # Linux/Mac
-
-# Instalar dependencias
 pip install -r requirements.txt
-
-# Lanzar Jupyter
 jupyter notebook
 ```
 
-Dependencias clave: `pandas 2.2`, `numpy 1.26`, `scikit-learn 1.4`, `xgboost 2.0`, `shap 0.44`, `imbalanced-learn 0.12`.
+Dependencias clave: `pandas`, `numpy`, `scikit-learn`, `xgboost` (con soporte GPU opcional via CUDA), `shap`, `imbalanced-learn`, `matplotlib`, `seaborn`. Para Python 3.14 se recomienda usar versiones `>=` sin pinear (las versiones de `requirements.txt` apuntan al perfil 2.x / 1.x para compatibilidad amplia).
 
-## Estado actual
+Para compilar los documentos LaTeX:
 
-- [x] ETL Camara de Comercio (notebook 01)
-- [x] ETL nacional NIIF Pymes (notebook 02)
-- [x] Estado del arte v2 redactado (48 referencias)
-- [x] Modulo de indicadores financieros (`src/indicadores.py`)
-- [x] Modulo de utilidades ETL con normalizacion de mojibake (`src/etl_utils.py`)
-- [x] Datos consolidados descargados localmente (5 CSVs, 367 MB)
-- [ ] Notebook 03 — calculo de indicadores sobre el dataset nacional
-- [ ] Notebook 04 — etiquetado de riesgo
-- [ ] Notebook 05 — entrenamiento (LR / RF / XGBoost)
-- [ ] Notebook 06 — evaluacion + TreeSHAP
-- [ ] Notebook 07 — validacion sobre Ibague
+```bash
+tectonic -X compile docs/informe_final/informe_final.tex
+tectonic -X compile docs/diapositivas/diapositivas.tex
+tectonic -X compile "docs/literatura/Estado del arte/latex/estado_del_arte_v2.tex"
+```
 
-## Plan de trabajo
+## Como reproducir
 
-El roadmap completo del proyecto (11 fases con criterios de aceptacion, dependencias, pitfalls, mapeo a las secciones del informe final y plan de slides) esta en [`PLAN_DE_TRABAJO.md`](PLAN_DE_TRABAJO.md). Es el documento operativo que cualquier integrante (humano o IA) puede ejecutar fase por fase.
+1. Clonar el repositorio y traer los CSVs LFS (`git lfs pull`).
+2. Crear el venv e instalar dependencias.
+3. Ejecutar los notebooks en orden, de `03` a `10`. Los notebooks `01` y `02` corresponden al ETL desde los datasets crudos del SIREM y solo son necesarios si se quiere re-construir el consolidado.
+4. Cada notebook deja sus salidas en `data/processed/`, `data/ibague/`, `reports/figures/`, `reports/tables/` y `reports/metrics/`.
 
-## Notas operativas
+Convenciones (ver [`PLAN_DE_TRABAJO.md`](PLAN_DE_TRABAJO.md) §2 para el detalle):
 
-- **Notebooks 01 y 02 ya fueron ejecutados** y produjeron los CSVs en `data/processed/`. No es necesario re-correrlos para este trabajo final. Si se quisiera, las rutas absolutas Windows (`C:\Users\USUARIO1\Documents\Tesis\dataset`) requieren ajuste en Linux/Mac (celda 3 de cada notebook).
-- **Encoding/mojibake**: 105 columnas del consolidado tienen `ï¿½` por vocales tildadas. Cargar siempre via `src.etl_utils.cargar_consolidado()` o llamar `normalizar_columnas()` para obtener nombres limpios.
-- **Modelos** (`models/`) estan gitignored: se regeneran corriendo el notebook 05.
-- **`src/`** funciona como paquete Python: desde un notebook en `notebooks/` usar `sys.path.insert(0, '..')` o ejecutar Jupyter desde la raiz del repo.
+- `random_state=42` y `np.random.seed(42)` en todas las celdas iniciales.
+- Holdout Ibague (61 NITs) prohibido en train / val / test nacional (asserts en notebook 06).
+- Split temporal: train 2016-2021, val 2022, test 2023-2024.
+- Salidas estandarizadas en `data/processed/`, `reports/figures/`, `reports/tables/`, `reports/metrics/`.
+
+## Decisiones metodologicas
+
+- **Etiquetado**: Z''-Score Altman para mercados emergentes con terciles empiricos del dataset (no umbrales originales) + heuristica de 5+5 senales con terciles por indicador. Etiqueta final por consenso B$\equiv$C; Cohen $\kappa_{B,C} = 0{,}446$.
+- **Modelo principal**: XGBoost con `sample_weight` balanceado -- mejor F1-macro en validacion (0,9979) y test (0,9972).
+- **Baselines**: regresion logistica + Random Forest + XGBoost + SMOTE.
+- **Validacion temporal**: cronologica estricta, sin K-Fold aleatorio que introduciria leakage por empresa.
+- **Interpretabilidad**: TreeSHAP global (5\,000 obs estratificadas) + 9 waterfall plots locales.
+- **Robustez verificada**: estabilidad temporal (gap 0,03 pp), sectorial (gap 0,22 pp), SHAP top-3 al 100% sobre 5 seeds.
+
+## Estado del proyecto
+
+Las once fases del [`PLAN_DE_TRABAJO.md`](PLAN_DE_TRABAJO.md) estan ejecutadas:
+
+| Fase | Resultado |
+|---|---|
+| 1. Indicadores + EDA | 18 indicadores + Z''-Score, 5 figuras |
+| 2. Etiquetado triangulado | $\kappa_{B,C}=0{,}446$, distribucion 16,8 / 66,4 / 16,8 |
+| 3. Feature engineering | 71 features (7 familias) winsorizadas p1-p99 |
+| 4. Particion temporal | 4 asserts de no-leakage Ibague PASS |
+| 5. Modelado | 4 modelos, 70 fits, GPU NVIDIA RTX 2060 |
+| 6. Evaluacion + SHAP | F1-macro test 0,9972; 7/9 features de literatura en top 10 |
+| 7. Validacion Ibague | F1-macro 0,9948 (sin 2017), 1 error en 359 |
+| 8. Discusion | $+56$ pp vs Altman puro; kappa manual = 0,500 |
+| 9. Estado del arte v2 | 48 referencias, 7 ejes, ajustado con resultados |
+| 10. Informe final | 33 paginas LaTeX, 16 figuras, 8 tablas, 36 citas |
+| 11. Diapositivas | 20 slides Beamer, regla 7x7 cumplida |
 
 ## Autores
 
-Juan Camilo Perea · German
-Universidad de Ibague — Ingenieria de Sistemas
+Juan Camilo Perea  *  German
+Universidad de Ibague -- Facultad de Ingenieria
+2026

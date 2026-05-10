@@ -39,3 +39,19 @@ Desktop.ini
 # Variables de entorno
 .env
 .env.local
+
+# Artefactos de compilacion LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
