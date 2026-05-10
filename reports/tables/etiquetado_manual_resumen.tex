@@ -1,0 +1,15 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Acuerdo entre el modelo XGBoost, el etiquetado manual experto (protocolo Z-Score + ajustes, $n=30$) y la etiqueta de Fase 2 (consenso B$\equiv$C). El acuerdo XGBoost-manual con kappa $\geq$ 0.5 cumple el criterio 8.3.2.}
+\label{tab:etiquetado_manual_resumen}
+\begin{tabular}{l rrr}
+\toprule
+Comparacion & Coincidencias & Accuracy & Cohen $\kappa$ \\
+\midrule
+XGBoost vs manual & 20/30 & 0.6667 & 0.5000 \\
+XGBoost vs etiqueta\_final (Fase 2) & 30/30 & 1.0000 & 1.0000 \\
+Manual vs etiqueta\_final (Fase 2) & 20/30 & 0.6667 & 0.5000 \\
+\bottomrule
+\end{tabular}
+\end{table}

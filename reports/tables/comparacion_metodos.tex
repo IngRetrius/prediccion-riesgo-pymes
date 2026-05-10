@@ -1,0 +1,18 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Comparacion de metodos sobre test nacional ($n=50\,957$, 2023--2024). XGBoost supera a Altman puro (umbrales originales) por +56.01pp en F1-macro -- validando que el modelo aprende patrones que la heuristica no captura. La columna AUC-ROC para Altman/heuristicas se reporta con pseudo-probabilidades one-hot derivadas de la etiqueta dura.}
+\label{tab:comparacion_metodos}
+\begin{tabular}{l rrrr}
+\toprule
+Metodo & Acc & F1-macro & F1-pond & AUC-ROC$_{\text{OvR}}$ \\
+\midrule
+XGBoost & 0.9975 & 0.9972 & 0.9975 & 1.0000 \\
+XGBoost+SMOTE & 0.9962 & 0.9956 & 0.9962 & 1.0000 \\
+RandomForest & 0.9950 & 0.9943 & 0.9950 & 0.9999 \\
+LogisticRegression & 0.8210 & 0.8105 & 0.8239 & 0.9533 \\
+Altman terciles & 0.6867 & 0.6891 & 0.6844 & 0.8411 \\
+Altman umbrales originales & 0.3793 & 0.4371 & 0.3168 & 0.6478 \\
+\bottomrule
+\end{tabular}
+\end{table}

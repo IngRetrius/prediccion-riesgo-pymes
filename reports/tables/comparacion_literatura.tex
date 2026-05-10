@@ -1,0 +1,18 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Comparacion con la literatura del estado del arte v2 (\S3.4). Las metricas no son directamente comparables (diferentes datasets, definiciones de etiqueta y pre-procesado), pero situan nuestro resultado en el rango superior reportado en la literatura. La contribucion marginal del ML sobre la heuristica pura se mide en la Tabla \ref{tab:comparacion_metodos}.}
+\label{tab:comparacion_literatura}
+\begin{tabular}{l l l l r}
+\toprule
+Trabajo & Modelo & Contexto & Metrica reportada & AUC \\
+\midrule
+Boumhidi 2025 & XGBoost & PYMES Marruecos & AUC=0.930 & 0.93 \\
+Mahesh 2025   & XGBoost & PYMES India     & Acc=0.927 & --   \\
+Yufenyuy 2024 & XGBoost & PYMES Africa    & Acc=0.934 & --   \\
+Dasilas 2024 (SLR) & Ensemble medio & Multipais & F1$\sim$0.89 & --   \\
+\midrule
+\textbf{Este trabajo} & XGBoost (sw=balanced, depth=8) & PYMES Colombia (SIREM) & F1-macro=0.9972 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}

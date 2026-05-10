@@ -1,0 +1,226 @@
+{
+  "fase": 8,
+  "random_state": 42,
+  "tarea_8_1_1_vs_clasicos": {
+    "metricas_metodos": {
+      "XGBoost": {
+        "accuracy": 0.9975077025727574,
+        "f1_macro": 0.9971807034692531,
+        "f1_weighted": 0.9975074912130636,
+        "auc_roc_ovr_macro": 0.9999867746680308
+      },
+      "XGBoost+SMOTE": {
+        "accuracy": 0.9961732441077772,
+        "f1_macro": 0.9955668277309405,
+        "f1_weighted": 0.9961721739850486,
+        "auc_roc_ovr_macro": 0.9999618286475179
+      },
+      "RandomForest": {
+        "accuracy": 0.994995780756324,
+        "f1_macro": 0.9943341381343324,
+        "f1_weighted": 0.9949928669029627,
+        "auc_roc_ovr_macro": 0.9998943035742635
+      },
+      "LogisticRegression": {
+        "accuracy": 0.8210059461899248,
+        "f1_macro": 0.8104730284218767,
+        "f1_weighted": 0.8239020307734016,
+        "auc_roc_ovr_macro": 0.9532743258461532
+      },
+      "Altman umbrales originales": {
+        "accuracy": 0.37931981867064385,
+        "f1_macro": 0.4370818993994545,
+        "f1_weighted": 0.31683803910177577,
+        "auc_roc_ovr_macro": 0.6478328533523782
+      },
+      "Altman terciles": {
+        "accuracy": 0.6866770021783072,
+        "f1_macro": 0.6890557532046514,
+        "f1_weighted": 0.6844414297033398,
+        "auc_roc_ovr_macro": 0.8411238456997521
+      }
+    },
+    "delta_xgb_altman_orig_pp": 56.00988040697986,
+    "delta_xgb_altman_terc_pp": 30.812495026460173,
+    "criterio_8_3_1_xgb_supera_altman_ge_10pp": true
+  },
+  "tarea_8_1_2_etiquetado_manual": {
+    "protocolo": "Z-Score + ajustes liquidez/solvencia/operativa/shock (ver markdown seccion 3)",
+    "n_pymes": 30,
+    "distribucion_etiqueta_manual": {
+      "riesgo_bajo": 18,
+      "riesgo_alto": 8,
+      "riesgo_medio": 4
+    },
+    "distribucion_xgb": {
+      "riesgo_alto": 10,
+      "riesgo_bajo": 10,
+      "riesgo_medio": 10
+    },
+    "kappa_xgb_vs_manual": 0.5,
+    "kappa_xgb_vs_etiqueta_final": 1.0,
+    "kappa_manual_vs_etiqueta_final": 0.5,
+    "accuracy_xgb_vs_manual": 0.6666666666666666,
+    "criterio_8_3_2_kappa_ge_0_5": true
+  },
+  "tarea_8_1_4_robustez": {
+    "estabilidad_temporal": {
+      "f1_macro_2023": 0.997045682775168,
+      "f1_macro_2024": 0.9973211189226318,
+      "gap_pp": -0.02754361474637257,
+      "estable_lt_5pp": true
+    },
+    "estabilidad_sectorial": {
+      "top5_sectores": [
+        {
+          "sector": "comercio",
+          "n": 12664,
+          "f1_macro": 0.9957901608708836,
+          "accuracy": 0.9966045483259633
+        },
+        {
+          "sector": "inmobiliario",
+          "n": 8579,
+          "f1_macro": 0.9980116684109063,
+          "accuracy": 0.9979018533628629
+        },
+        {
+          "sector": "industria",
+          "n": 6481,
+          "f1_macro": 0.9971594180706363,
+          "accuracy": 0.9978398395309366
+        },
+        {
+          "sector": "construccion",
+          "n": 5971,
+          "f1_macro": 0.997415883814316,
+          "accuracy": 0.9979902863841903
+        },
+        {
+          "sector": "profesional",
+          "n": 4252,
+          "f1_macro": 0.9976730927596219,
+          "accuracy": 0.9976481655691439
+        }
+      ],
+      "gap_max_min_pp": 0.22215075400227047,
+      "estable_lt_5pp": true
+    },
+    "estabilidad_shap_seeds": {
+      "seeds": [
+        7,
+        21,
+        42,
+        100,
+        2024
+      ],
+      "mejor_iter_por_seed": {
+        "7": 162,
+        "21": 143,
+        "42": 221,
+        "100": 133,
+        "2024": 156
+      },
+      "top10_por_seed": {
+        "7": [
+          "z_score_altman",
+          "margen_neto",
+          "razon_corriente",
+          "cobertura_intereses",
+          "razon_deuda",
+          "roa",
+          "capital_trabajo",
+          "deuda_patrimonio",
+          "roe",
+          "margen_operacional"
+        ],
+        "21": [
+          "z_score_altman",
+          "margen_neto",
+          "razon_corriente",
+          "cobertura_intereses",
+          "razon_deuda",
+          "roa",
+          "capital_trabajo",
+          "deuda_patrimonio",
+          "roe",
+          "margen_operacional"
+        ],
+        "42": [
+          "z_score_altman",
+          "razon_corriente",
+          "margen_neto",
+          "cobertura_intereses",
+          "razon_deuda",
+          "roa",
+          "capital_trabajo",
+          "deuda_patrimonio",
+          "roe",
+          "apalancamiento"
+        ],
+        "100": [
+          "z_score_altman",
+          "margen_neto",
+          "razon_corriente",
+          "cobertura_intereses",
+          "razon_deuda",
+          "roa",
+          "capital_trabajo",
+          "deuda_patrimonio",
+          "roe",
+          "margen_operacional"
+        ],
+        "2024": [
+          "z_score_altman",
+          "margen_neto",
+          "razon_corriente",
+          "cobertura_intereses",
+          "razon_deuda",
+          "roa",
+          "capital_trabajo",
+          "deuda_patrimonio",
+          "roe",
+          "margen_operacional"
+        ]
+      },
+      "jaccard_top10_pares": [
+        1.0,
+        0.8181818181818182,
+        1.0,
+        1.0,
+        0.8181818181818182,
+        1.0,
+        1.0,
+        0.8181818181818182,
+        0.8181818181818182,
+        1.0
+      ],
+      "jaccard_top10_promedio": 0.9272727272727274,
+      "jaccard_top10_min": 0.8181818181818182,
+      "estabilidad_top3": {
+        "z_score_altman": 1.0,
+        "razon_corriente": 1.0,
+        "margen_neto": 1.0
+      },
+      "estabilidad_top10": {
+        "z_score_altman": 1.0,
+        "razon_corriente": 1.0,
+        "margen_neto": 1.0,
+        "cobertura_intereses": 1.0,
+        "razon_deuda": 1.0,
+        "roa": 1.0,
+        "capital_trabajo": 1.0,
+        "deuda_patrimonio": 1.0,
+        "roe": 1.0,
+        "apalancamiento": 0.2
+      },
+      "criterio_8_3_3_top3_ge_90pct": true
+    }
+  },
+  "criterios_aceptacion_plan": {
+    "8_3_1_xgb_supera_altman_ge_10pp": true,
+    "8_3_2_kappa_xgb_manual_ge_0_5": true,
+    "8_3_3_estabilidad_shap_top3_ge_90pct": true,
+    "todos_cumplen": true
+  }
+}
