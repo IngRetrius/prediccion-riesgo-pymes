@@ -2,7 +2,7 @@
 % Trabajo Final - Asignatura Inteligencia Artificial
 % Titulo: Prediccion de Riesgo Financiero en PYMES Colombianas mediante
 %         Machine Learning con Datos del SIREM (2016-2024)
-% Autores: Juan Camilo Perea, German
+% Autores: Juan Camilo Perea, German Castellanos
 % Universidad de Ibague - 2026
 % ===========================================================================
 
@@ -82,7 +82,7 @@
 
 {\large\bfseries Autores \par}
 {\large Juan Camilo Perea \par}
-{\large German \par}
+{\large German Castellanos \par}
 
 \vfill
 
@@ -386,15 +386,6 @@ El \textit{ranking} de \texttt{mean(|SHAP|)} es: (1) \texttt{z\_score\_altman} (
 
 Siete de las nueve \textit{features} esperadas seg\'un la s\'intesis del estado del arte ---\texttt{cobertura\_intereses}, \texttt{razon\_deuda}, \texttt{margen\_neto}, \texttt{roa}, \texttt{razon\_corriente}, \texttt{capital\_trabajo} y \texttt{z\_score\_altman}--- aparecen en el top 10 SHAP, evidenciando consistencia con la literatura.
 
-La Figura~\ref{fig:shap-waterfall} presenta nueve \textit{waterfall plots} locales (uno por celda de la matriz clase verdadera $\times$ clase predicha), permitiendo trazar el aporte de cada \textit{feature} en predicciones individuales.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{13_shap_waterfall_ejemplos.png}
-\caption{Nueve \textit{waterfall plots} de SHAP local: aportes de cada \textit{feature} para casos individuales seleccionados de la matriz de confusi\'on.}
-\label{fig:shap-waterfall}
-\end{figure}
-
 \subsection{Validaci\'on en el holdout de Ibagu\'e}
 
 La Tabla~\ref{tab:metricas_ibague} reporta el desempe\~no sobre el \textit{holdout} regional, con tres subconjuntos: el total ($n=359$), excluyendo el a\~no anomal\'o 2017 ($n=328$) y solo 2017 ($n=31$).
@@ -517,7 +508,7 @@ A continuaci\'on se mapea cada objetivo espec\'ifico (Secci\'on~\ref{sec:objetiv
 
 \textbf{Objetivo 4 --- Evaluaci\'on robusta y validaci\'on temporal estricta.} \emph{Cumplido.} Las m\'etricas de test son F1-macro $= 0{,}9972$, AUC-ROC OvR macro $= 0{,}99999$, AUC-PR macro $= 0{,}99997$. El split temporal 2016--2021 / 2022 / 2023--2024 con \textit{holdout} regional Ibagu\'e fue verificado mediante cuatro \textit{asserts} de no-fuga; sin \textit{drift} entre splits (\textit{gap} $|$train$-$test$|$ $= 0{,}28$ pp).
 
-\textbf{Objetivo 5 --- Interpretaci\'on TreeSHAP global y local.} \emph{Cumplido.} El SHAP \textit{beeswarm} (Figura~\ref{fig:shap-beeswarm}) y el ranking de \texttt{mean(|SHAP|)} (Figura~\ref{fig:shap-bar}) identifican al \zaltscore{}, el margen neto, la raz\'on corriente, la cobertura de intereses y la raz\'on de deuda como las \textit{features} dominantes; consistentes con la literatura del estado del arte. Nueve \textit{waterfalls} locales (Figura~\ref{fig:shap-waterfall}) ejemplifican la decisi\'on caso por caso. Limitaci\'on: el \zaltscore{} pesa aproximadamente $3\times$ m\'as que el segundo \textit{feature}, lo cual refleja la circularidad parcial inherente a la construcci\'on del etiquetado de Fase 2.
+\textbf{Objetivo 5 --- Interpretaci\'on TreeSHAP global y local.} \emph{Cumplido.} El SHAP \textit{beeswarm} (Figura~\ref{fig:shap-beeswarm}) y el ranking de \texttt{mean(|SHAP|)} (Figura~\ref{fig:shap-bar}) identifican al \zaltscore{}, el margen neto, la raz\'on corriente, la cobertura de intereses y la raz\'on de deuda como las \textit{features} dominantes; consistentes con la literatura del estado del arte. Limitaci\'on: el \zaltscore{} pesa aproximadamente $3\times$ m\'as que el segundo \textit{feature}, lo cual refleja la circularidad parcial inherente a la construcci\'on del etiquetado de Fase 2.
 
 \textbf{Objetivo 6 --- Validaci\'on en Ibagu\'e.} \emph{Cumplido.} F1-macro Ibagu\'e $= 0{,}9948$ (sin 2017) con \textit{gap} de $+0{,}24$ pp respecto al test nacional, muy por debajo del umbral $\leq 10$ pp del criterio de aceptaci\'on. Solo un error de clasificaci\'on en 359 predicciones, justificado por una ca\'ida del 95\% en la cobertura de intereses interanual no observada por la heur\'istica de etiquetado nivel-base. Limitaci\'on: la muestra de 61 PYMES es limitada estad\'isticamente para conclusiones sobre subgrupos sectoriales o departamentales m\'as finos.
 
